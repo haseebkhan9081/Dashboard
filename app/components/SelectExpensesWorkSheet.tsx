@@ -66,7 +66,17 @@ const SelectExpensesWorkSheet = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-    <Select value={String(selectedValue)} onValueChange={handleSelectChange}>
+
+    <div
+    className="w-full
+    justify-center
+    items-center
+    flex
+    space-y-4
+    flex-col">
+        <h3
+        className="text-slate-500">Select Expenses WorkSheet...</h3>
+<Select value={String(selectedValue)} onValueChange={handleSelectChange}>
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="Select Expenses WorkSheet..." />
       </SelectTrigger>  
@@ -83,6 +93,10 @@ const SelectExpensesWorkSheet = () => {
         </SelectGroup>
       </SelectContent>
     </Select>
+</div>
+
+
+    
   );
 };
 

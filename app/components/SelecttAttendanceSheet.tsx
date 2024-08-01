@@ -54,8 +54,17 @@ const SelecttAttendanceSheet = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-    <Select 
-    
+    <div
+    className="w-full
+    justify-center
+    items-center
+    flex
+    space-y-4
+    flex-col">
+        <h3
+        className="text-slate-500">Attendance Sheet:</h3>
+
+<Select 
     value={selectedValue} onValueChange={handleSelectChange}>
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="Select Attendance Sheet ... " />
@@ -73,6 +82,9 @@ const SelecttAttendanceSheet = () => {
         </SelectGroup>
       </SelectContent>
     </Select>
+
+    </div>
+   
   );
 };
 
