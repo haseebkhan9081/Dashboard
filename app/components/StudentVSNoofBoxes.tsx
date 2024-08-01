@@ -20,7 +20,7 @@ const fetchAllFiles = async (
   attendanceWorkSheet: string,
   expensesWorkSheet: string
 ): Promise<File[]> => {
-  const response = await fetch(`http://localhost:3002/api/analytics/Studentsvsboxes?attendanceSheet=${attendanceSheet}&quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}&attendanceWorkSheet=${attendanceWorkSheet}&expensesWorkSheet=${expensesWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/Studentsvsboxes?attendanceSheet=${attendanceSheet}&quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}&attendanceWorkSheet=${attendanceWorkSheet}&expensesWorkSheet=${expensesWorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -89,6 +89,7 @@ const StudentVSNoofBoxes: React.FC = () => {
 
   const options: ChartOptions<'line'> = {
     responsive: true,
+  maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const, // 'top' must be typed as const
@@ -102,7 +103,7 @@ const StudentVSNoofBoxes: React.FC = () => {
 
   return (
      
-      <div className=" className='h-[600px] p-4 md:p-6 w-full md:w-[850px]">
+      <div className="h-[500px] p-4 md:p-6 w-full md:w-[850px]">
         <Line data={chartData} options={options} />
       </div>
     

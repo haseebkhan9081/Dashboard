@@ -24,7 +24,14 @@ const Analytics = () => {
         
  
 
-<StudentVSNoofBoxes/>
+
+ <StudentVSNoofBoxes/>
+
+
+
+
+ 
+
 
 
  

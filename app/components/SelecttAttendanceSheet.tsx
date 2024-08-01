@@ -15,7 +15,9 @@ type File = {
 };
 
 const fetchAllFiles = async (): Promise<File[]> => {
-  const response = await fetch('http://localhost:3002/api/sheets'); // Replace with your API endpoint
+    
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/sheets`); // Replace with your API endpoint
+ 
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
