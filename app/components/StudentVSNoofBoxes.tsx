@@ -103,7 +103,7 @@ const StudentVSNoofBoxes: React.FC = () => {
 
   return (
      
-      <div className="h-[400px] p-4 md:p-6 w-full md:w-[900px]">
+      <div className="h-[400px] p-4 md:p-6 w-full md:w-[1000px]">
         <Line data={chartData} options={options} />
       </div>
     
