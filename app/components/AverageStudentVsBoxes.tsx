@@ -8,19 +8,19 @@ import { ChartData, ChartOptions } from 'chart.js';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 const fetchAllFiles = async (
- 
   quotationSheet: string,
- 
-  expensesWorkSheet: string
+  quotationWorkSheet: string,
+  attendanceSheet: string,
+  attendanceWorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/expenses?quotationSheet=${quotationSheet}&expensesWorkSheet=${expensesWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCostStudentAverage?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}&attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${attendanceWorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   return response.json();
 };
 
-const Expenses: React.FC = () => {
+const AverageStudentVsBoxes: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
@@ -28,13 +28,13 @@ const Expenses: React.FC = () => {
   const attendanceWorkSheet = params.get("AttendanceWorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet!=null && quotationSheet!=null && quotationWorkSheet!=null && attendanceWorkSheet!=null && expensesWorkSheet!=null;
+  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets',quotationSheet,expensesWorkSheet],
+    queryKey: ['worksheets', quotationSheet, quotationWorkSheet, attendanceSheet, attendanceWorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles( quotationSheet!, expensesWorkSheet!);
+        return fetchAllFiles(quotationSheet!, quotationWorkSheet!, attendanceSheet!, attendanceWorkSheet!);
       } else {
         return Promise.resolve([]);
       }
@@ -46,13 +46,33 @@ const Expenses: React.FC = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   const chartData: ChartData<'bar'> = {
-    labels: ['Salary', 'Other Expenses'],
+    labels: [
+      `Average Boxes (${data.currentWorksheet})`, 
+      `Average Students Present (${data.currentWorksheet})`,
+      `Average Boxes (${data.previousWorksheet})`, 
+      `Average Students Present (${data.previousWorksheet})`
+    ],
     datasets: [
       {
-        label: 'Amount',
-        data: [data.salarySum, data.otherExpensesSum],
-        backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+        label: 'Counts',
+        data: [
+          data.averageBoxesCurrent, 
+          data.averageStudentsPresentCurrent, 
+          data.averageBoxesPrevious, 
+          data.averageStudentsPresentPrevious
+        ],
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.5)', 
+          'rgba(153, 102, 255, 0.5)', 
+          'rgba(255, 206, 86, 0.5)', 
+          'rgba(54, 162, 235, 0.5)'
+        ],
+        borderColor: [
+          'rgba(75, 192, 192, 1)', 
+          'rgba(153, 102, 255, 1)', 
+          'rgba(255, 206, 86, 1)', 
+          'rgba(54, 162, 235, 1)'
+        ],
         borderWidth: 1,
       },
     ],
@@ -67,7 +87,7 @@ const Expenses: React.FC = () => {
       },
       title: {
         display: true,
-        text: 'Salary vs Other Expenses',
+        text: 'Average Boxes and Students Present',
       },
     },
     scales: {
@@ -84,4 +104,4 @@ const Expenses: React.FC = () => {
   );
 };
 
-export default Expenses;
+export default AverageStudentVsBoxes;

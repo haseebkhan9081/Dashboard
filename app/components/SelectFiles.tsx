@@ -50,7 +50,7 @@ const SelectFiles: React.FC = () => {
         
         text-white rounded'
       >
-        {buttonText}
+        {isVisible?"OK":buttonText}
       </Button>
     </div>
   );
