@@ -1,17 +1,10 @@
 import * as React from "react";
 import { useQuery } from '@tanstack/react-query';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import Select from 'react-select';
 import { useSearchParams } from "next/navigation";
 
 type File = {
-  value: Number;
+  value: number;
   label: string;
 };
 
@@ -21,13 +14,12 @@ const fetchAllFiles = async (sheetId: string): Promise<File[]> => {
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
- 
   return response.json();
 };
 
 const SelectExpensesWorkSheet = () => {
   const searchParams = useSearchParams();
-  const sheetId = searchParams.get("QuotationSheet"); // Get the 'AttendanceSheet' parameter
+  const sheetId = searchParams.get("QuotationSheet"); // Get the 'QuotationSheet' parameter
 
   // Pass the sheetId to the query function
   const { data, error, isLoading } = useQuery<File[]>({
@@ -42,23 +34,28 @@ const SelectExpensesWorkSheet = () => {
     enabled: !!sheetId // Only fetch if sheetId is available
   });
 
-  const [selectedValue, setSelectedValue] = React.useState<Number>();
-  console.log("worksheets in this sheet",data);
+  const [selectedValue, setSelectedValue] = React.useState<File | null>(null);
+
   React.useEffect(() => {
     // Extract the value from the URL when the component mounts
     const url = new URL(window.location.href);
     const sheetValue = url.searchParams.get('ExpensesWorkSheet');
     console.log("value found in url", sheetValue);
-    if (sheetValue) {
-      setSelectedValue(Number(sheetValue));
+    if (sheetValue && data) {
+      const foundValue = data.find(file => file.value === Number(sheetValue));
+      setSelectedValue(foundValue || null);
     }
-  }, []);
+  }, [data]);
 
-  const handleSelectChange = (value: string) => {
-    setSelectedValue(Number(value));
+  const handleSelectChange = (selectedOption: File | null) => {
+    setSelectedValue(selectedOption);
     // Update the URL with the selected value
     const url = new URL(window.location.href);
-    url.searchParams.set('ExpensesWorkSheet', value);
+    if (selectedOption) {
+      url.searchParams.set('ExpensesWorkSheet', String(selectedOption.value));
+    } else {
+      url.searchParams.delete('ExpensesWorkSheet');
+    }
     window.history.pushState({}, '', url.toString());
   };
 
@@ -66,37 +63,18 @@ const SelectExpensesWorkSheet = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-
-    <div
-    className="w-full
-    justify-center
-    items-center
-    flex
-    space-y-4
-    flex-col">
-        <h3
-        className="text-slate-500">Select Expenses WorkSheet...</h3>
-<Select value={String(selectedValue)} onValueChange={handleSelectChange}>
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="Select Expenses WorkSheet..." />
-      </SelectTrigger>  
-      <SelectContent>
-        <SelectGroup>
-          {data?.map((file, index) => (
-            <SelectItem
-              key={index}
-              value={String(file.value)}
-            >
-              {file.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-</div>
-
-
-    
+    <div className="w-full justify-center items-center flex space-y-4 flex-col">
+      <h3 className="text-slate-500">Expenses WorkSheet:</h3>
+      <Select
+        value={selectedValue}
+        onChange={handleSelectChange}
+        options={data || []}
+        getOptionLabel={(option) => option.label}
+        getOptionValue={(option) => String(option.value)}
+        placeholder="Select Expenses WorkSheet..."
+        className="w-[280px]"
+      />
+    </div>
   );
 };
 

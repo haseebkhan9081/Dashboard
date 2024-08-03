@@ -1,18 +1,11 @@
 import * as React from "react";
 import { useQuery } from '@tanstack/react-query';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import Select from 'react-select';
 import { useSearchParams } from "next/navigation";
 
 type File = {
-  value: Number;
-  label: String;
+  value: number;
+  label: string;
 };
 
 // Pass the value parameter to the fetch function
@@ -21,7 +14,6 @@ const fetchAllFiles = async (sheetId: string): Promise<File[]> => {
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
- 
   return response.json();
 };
 
@@ -42,23 +34,28 @@ const SelectAttendanceWorkSheet = () => {
     enabled: !!sheetId // Only fetch if sheetId is available
   });
 
-  const [selectedValue, setSelectedValue] = React.useState<Number>();
-  console.log("worksheets in this sheet",data);
+  const [selectedValue, setSelectedValue] = React.useState<File | null>(null);
+
   React.useEffect(() => {
     // Extract the value from the URL when the component mounts
     const url = new URL(window.location.href);
     const sheetValue = url.searchParams.get('AttendanceWorkSheet');
     console.log("value found in url for AttendanceWorkSheet ", sheetValue);
-    if (sheetValue) {
-      setSelectedValue(Number(sheetValue));
+    if (sheetValue && data) {
+      const foundValue = data.find(file => file.value === Number(sheetValue));
+      setSelectedValue(foundValue || null);
     }
-  }, []);
+  }, [data]);
 
-  const handleSelectChange = (value: String) => {
-    setSelectedValue(Number(value));
+  const handleSelectChange = (selectedOption: File | null) => {
+    setSelectedValue(selectedOption);
     // Update the URL with the selected value
     const url = new URL(window.location.href);
-    url.searchParams.set('AttendanceWorkSheet', String(value));
+    if (selectedOption) {
+      url.searchParams.set('AttendanceWorkSheet', String(selectedOption.value));
+    } else {
+      url.searchParams.delete('AttendanceWorkSheet');
+    }
     window.history.pushState({}, '', url.toString());
   };
 
@@ -66,36 +63,18 @@ const SelectAttendanceWorkSheet = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-    <div
-    className="w-full
-    justify-center
-    items-center
-    flex
-    space-y-4
-    flex-col">
-        <h3
-        className="text-slate-500">Attendance WorkSheet:</h3>
-        
-        <Select value={String(selectedValue)} onValueChange={handleSelectChange}>
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="Select Attendance Work Sheet..." />
-      </SelectTrigger>  
-      <SelectContent>
-        <SelectGroup>
-          {data?.map((file, index) => (
-            <SelectItem
-              key={index}
-              value={String(file.value)}
-            >
-              {file.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-        
-        </div>
-    
+    <div className="w-full justify-center items-center flex space-y-4 flex-col">
+      <h3 className="text-slate-500">Attendance WorkSheet:</h3>
+      <Select
+        value={selectedValue}
+        onChange={handleSelectChange}
+        options={data || []}
+        getOptionLabel={(option) => option.label}
+        getOptionValue={(option) => String(option.value)}
+        placeholder="Select Attendance Work Sheet..."
+        className="w-[280px]"
+      />
+    </div>
   );
 };
 
