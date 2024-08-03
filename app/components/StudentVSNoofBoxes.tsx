@@ -47,7 +47,10 @@ const StudentVSNoofBoxes: React.FC = () => {
         return Promise.resolve([]); // Return an empty array if not all params are available
       }
     },
-    enabled: !!allParamsAvailable // Only fetch if all params are available
+    enabled: !!allParamsAvailable, // Only fetch if all params are available
+    retry: 3, // Number of retry attempts
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
+  
   });
 
   if (isLoading) return <div>Loading...</div>;

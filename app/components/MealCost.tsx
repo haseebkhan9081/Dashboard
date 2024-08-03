@@ -37,7 +37,10 @@ const MealCost: React.FC = () => {
         return Promise.resolve({});
       }
     },
-    enabled: !!allParamsAvailable
+    enabled: !!allParamsAvailable,
+    retry: 3, // Number of retry attempts
+   retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
+
   });
 
   if (isLoading) return <div>Loading...</div>;
