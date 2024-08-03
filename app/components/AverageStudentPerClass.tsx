@@ -8,19 +8,17 @@ import { ChartData, ChartOptions } from 'chart.js';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 const fetchAllFiles = async (
-  quotationSheet: string,
-  quotationWorkSheet: string,
   attendanceSheet: string,
   attendanceWorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCostStudentAverage?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}&attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${attendanceWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/studentAveragePerClass?attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${attendanceWorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   return response.json();
 };
 
-const AverageStudentVsBoxes: React.FC = () => {
+const AverageStudentPerClass: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
@@ -31,10 +29,10 @@ const AverageStudentVsBoxes: React.FC = () => {
   const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, quotationWorkSheet, attendanceSheet, attendanceWorkSheet],
+    queryKey: ['worksheets', attendanceSheet, attendanceWorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, quotationWorkSheet!, attendanceSheet!, attendanceWorkSheet!);
+        return fetchAllFiles(attendanceSheet!, attendanceWorkSheet!);
       } else {
         return Promise.resolve([]);
       }
@@ -46,43 +44,20 @@ const AverageStudentVsBoxes: React.FC = () => {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   const chartData: ChartData<'bar'> = {
-    labels: [
-      `Average Boxes (${data.currentWorksheet})`, 
-      `Average Students Present (${data.currentWorksheet})`,
-      '', // Spacer
-      `Average Boxes (${data.previousWorksheet})`, 
-      `Average Students Present (${data.previousWorksheet})`
-    ],
+    labels: data.map((d: { department: string }) => d.department),
     datasets: [
       {
-        label: 'Counts',
-        data: [
-          data.averageBoxesCurrent, 
-          data.averageStudentsPresentCurrent, 
-          null, // Spacer
-          data.averageBoxesPrevious, 
-          data.averageStudentsPresentPrevious
-        ],
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.5)', 
-          'rgba(153, 102, 255, 0.5)', 
-          'rgba(0, 0, 0, 0)', // Spacer
-          'rgba(255, 206, 86, 0.5)', 
-          'rgba(54, 162, 235, 0.5)'
-        ],
-        borderColor: [
-          'rgba(75, 192, 192, 1)', 
-          'rgba(153, 102, 255, 1)', 
-          'rgba(0, 0, 0, 0)', // Spacer
-          'rgba(255, 206, 86, 1)', 
-          'rgba(54, 162, 235, 1)'
-        ],
+        label: 'Average Students Present',
+        data: data.map((d: { average: number }) => d.average),
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+        borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
     ],
   };
 
   const options: ChartOptions<'bar'> = {
+    indexAxis: 'y', // Make the chart horizontal
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -91,11 +66,11 @@ const AverageStudentVsBoxes: React.FC = () => {
       },
       title: {
         display: true,
-        text: 'Average Boxes and Students Present',
+        text: 'Average Students Present Per Department in the last 7 Days',
       },
     },
     scales: {
-      y: {
+      x: {
         beginAtZero: true,
       },
     },
@@ -108,4 +83,4 @@ const AverageStudentVsBoxes: React.FC = () => {
   );
 };
 
-export default AverageStudentVsBoxes;
+export default AverageStudentPerClass;

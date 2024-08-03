@@ -2,6 +2,8 @@ import React from 'react';
 import { useSearchParams } from 'next/navigation'; // Import useSearchParams
 import SelectFiles from './SelectFiles';
 import Analytics from './Analytics';
+import Image from 'next/image'; // Import Image component
+ 
 
 const DashBoard: React.FC = () => {
   const params = useSearchParams();
@@ -20,13 +22,14 @@ const DashBoard: React.FC = () => {
     expensesWorkSheet !== null;
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-3 w-full h-full md:p-6">
-      <div className="flex flex-row w-full justify-center items-center mb-6">
-        <h1 className="text-2xl md:text-3xl text-slate-800 font-semibold text-center">
+    <div className="flex flex-col items-center space-y-6 p-3 w-full h-full md:p-6 ">
+      <div className="flex flex-row w-full justify-center items-center mb-6 space-x-4 bg-white">
+        <Image src={"/Logo.png"} alt="Logo" width={100} height={100} className="shadow-lg" />
+        <h1 className="text-2xl md:text-3xl text-slate-800 font-semibold text-center tracking-wide">
           DashBoard NorishEd {new Date().getFullYear()}
         </h1>
       </div>
-      <div className="flex flex-col w-full max-w-6xl">
+      <div className="flex flex-col w-full bg-white p-6 rounded-lg shadow-lg">
         <SelectFiles />
         {isParamsAvailable ? (
           <Analytics />
