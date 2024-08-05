@@ -133,7 +133,8 @@ const MealCost: React.FC = () => {
         },
         clamp: true, // Ensures labels fit within bar
         padding: {
-          top: 4, // Adjust padding if needed
+          top: 4, 
+            // Adjust padding if needed
         },
         clip: true, // Clips labels to ensure they do not overflow the chart area
       }
