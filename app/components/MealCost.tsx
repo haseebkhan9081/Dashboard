@@ -78,37 +78,27 @@ const MealCost: React.FC = () => {
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
-    
     maintainAspectRatio: false,
     scales: {
-      
       'y-pkr': {
-        beginAtZero:true,
+        beginAtZero: true,
         type: 'linear',
-        display: true,
         position: 'left',
-        title: {
-          display: true,
-          text: 'Total Cost (PKR)',
-        },
         min: 0,
         max: maxPKR, // Set max value to include extra space
         ticks: {
-          
           callback: function (value) {
             return value.toLocaleString(); // Format numbers with commas
           }
-        }
+        },
+        title: {
+          display: false, // Remove title for PKR axis
+        },
       },
       'y-usd': {
-        beginAtZero:true,
+        beginAtZero: true,
         type: 'linear',
-        display: true,
         position: 'right',
-        title: {
-          display: true,
-          text: 'Total Cost (USD)',
-        },
         min: 0,
         max: maxUSD, // Set max value to include extra space
         grid: {
@@ -118,7 +108,10 @@ const MealCost: React.FC = () => {
           callback: function (value) {
             return value.toLocaleString(); // Format numbers with commas
           }
-        }
+        },
+        title: {
+          display: false, // Remove title for USD axis
+        },
       },
     },
     plugins: {
