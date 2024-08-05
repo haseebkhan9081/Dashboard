@@ -3,9 +3,10 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartData, ChartOptions } from 'chart.js';
 
-ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale);
+ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale, ChartDataLabels);
 
 const fetchAllFiles = async (quotationSheet: string, quotationWorkSheet: string) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCost?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}`);
@@ -44,9 +45,12 @@ const MealCost: React.FC = () => {
 
   // Convert the data into a format suitable for the bar chart
   const exchangeRate = 280; // PKR to USD exchange rate
-  const chartLabels = Object.keys(data);
+  const chartLabels = Object.keys(data).sort(); // Sort months alphabetically
   const pkrData = chartLabels.map(month => data[month]);
   const usdData = pkrData.map(cost => cost / exchangeRate);
+
+  const maxPKR = Math.max(...pkrData) * 1.2; // Adjust this multiplier to add extra space
+  const maxUSD = Math.max(...usdData) * 1.2; // Adjust this multiplier to add extra space
 
   const chartData: ChartData<'bar'> = {
     labels: chartLabels,
@@ -58,6 +62,7 @@ const MealCost: React.FC = () => {
         borderColor: '#A2BD9D', // Primary color
         borderWidth: 1,
         yAxisID: 'y-pkr',
+        barPercentage: 0.8, // Adjust this value to change the width of the bars
       },
       {
         label: 'Total Cost (USD)',
@@ -66,15 +71,19 @@ const MealCost: React.FC = () => {
         borderColor: '#9B9B9B', // Neutral color
         borderWidth: 1,
         yAxisID: 'y-usd',
+        barPercentage: 0.8, // Adjust this value to change the width of the bars
       },
     ],
   };
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
+    
     maintainAspectRatio: false,
     scales: {
+      
       'y-pkr': {
+        beginAtZero:true,
         type: 'linear',
         display: true,
         position: 'left',
@@ -82,8 +91,17 @@ const MealCost: React.FC = () => {
           display: true,
           text: 'Total Cost (PKR)',
         },
+        min: 0,
+        max: maxPKR, // Set max value to include extra space
+        ticks: {
+          
+          callback: function (value) {
+            return value.toLocaleString(); // Format numbers with commas
+          }
+        }
       },
       'y-usd': {
+        beginAtZero:true,
         type: 'linear',
         display: true,
         position: 'right',
@@ -91,9 +109,16 @@ const MealCost: React.FC = () => {
           display: true,
           text: 'Total Cost (USD)',
         },
+        min: 0,
+        max: maxUSD, // Set max value to include extra space
         grid: {
           drawOnChartArea: false, // only want the grid lines for one axis to show up
         },
+        ticks: {
+          callback: function (value) {
+            return value.toLocaleString(); // Format numbers with commas
+          }
+        }
       },
     },
     plugins: {
@@ -102,8 +127,23 @@ const MealCost: React.FC = () => {
       },
       title: {
         display: true,
-        text: 'Total Cost for 200 Meals (PKR vs USD)',
+        text: 'Total Cost Paid to Vendor (PKR vs USD)',
       },
+      datalabels: {
+        display: true,
+        color: '#444',
+        anchor: 'end',
+        align: 'top',
+        formatter: (value) => value.toLocaleString(), // Format numbers with commas
+        font: {
+          size: 10, // Adjust font size as needed
+        },
+        clamp: true, // Ensures labels fit within bar
+        padding: {
+          top: 4, // Adjust padding if needed
+        },
+        clip: true, // Clips labels to ensure they do not overflow the chart area
+      }
     },
   };
 

@@ -50,7 +50,8 @@ const AverageStudentPerClass: React.FC = () => {
     datasets: [
       {
         label: 'Average Students Present',
-        data: data.map((d: { average: number }) => d.average),
+        // Round up the average values
+        data: data.map((d: { average: string }) => Math.ceil(parseFloat(d.average))),
         backgroundColor: '#A2BD9D', // Primary color
         borderColor: '#A2BD9D', // Primary color
         borderWidth: 1,

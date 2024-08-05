@@ -2,10 +2,10 @@ import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
-import { ChartData, ChartOptions } from 'chart.js';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, ChartData, ChartOptions } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, ChartDataLabels);
 
 const fetchAllFiles = async (
   quotationSheet: string,
@@ -47,6 +47,9 @@ const AverageStudentVsBoxes: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
+  // Helper function to round up values
+  const roundUp = (value: number) => Math.ceil(value);
+
   // Ensure data is always an object with default values
   const {
     averageBoxesCurrent = 0,
@@ -67,14 +70,14 @@ const AverageStudentVsBoxes: React.FC = () => {
     datasets: [
       {
         label: 'Average Boxes',
-        data: [averageBoxesCurrent, null, averageBoxesPrevious, null],
+        data: [roundUp(averageBoxesCurrent), null, roundUp(averageBoxesPrevious), null],
         backgroundColor: ['#A2BD9D', '#A2BD9D', '#A2BD9D', '#A2BD9D'],
         borderColor: ['#A2BD9D', '#A2BD9D', '#A2BD9D', '#A2BD9D'],
         borderWidth: 1,
       },
       {
         label: 'Average Students Present',
-        data: [null, averageStudentsPresentCurrent, null, averageStudentsPresentPrevious],
+        data: [null, roundUp(averageStudentsPresentCurrent), null, roundUp(averageStudentsPresentPrevious)],
         backgroundColor: ['#9B9B9B', '#9B9B9B', '#9B9B9B', '#9B9B9B'],
         borderColor: ['#9B9B9B', '#9B9B9B', '#9B9B9B', '#9B9B9B'],
         borderWidth: 1,
@@ -93,10 +96,23 @@ const AverageStudentVsBoxes: React.FC = () => {
         display: true,
         text: 'Average Boxes and Students Present',
       },
+      datalabels: {
+        display: true,
+        color: '#444',
+        anchor: 'end',
+        align: 'top',
+        formatter: (value) => value !== null ? value.toString() : '',
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
+        max: Math.max(
+          roundUp(averageBoxesCurrent), 
+          roundUp(averageBoxesPrevious), 
+          roundUp(averageStudentsPresentCurrent), 
+          roundUp(averageStudentsPresentPrevious)
+        ) + 10, // Add 10 to provide additional space
       },
       x: {
         stacked: true,

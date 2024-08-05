@@ -98,7 +98,19 @@ const StudentVSNoofBoxes: React.FC = () => {
       },
       title: {
         display: true,
-        text: 'Number of Boxes vs Number of Presents',
+        text: 'Number of Boxes vs Number of Students',
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          // Rotate x-axis labels to vertical
+          maxRotation: 90, // Max rotation angle
+          minRotation: 90, // Min rotation angle
+        },
+      },
+      y: {
+        
       },
     },
   };
