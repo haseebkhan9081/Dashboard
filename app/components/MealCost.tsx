@@ -54,16 +54,16 @@ const MealCost: React.FC = () => {
       {
         label: 'Total Cost (PKR)',
         data: pkrData,
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: '#A2BD9D', // Primary color
+        borderColor: '#A2BD9D', // Primary color
         borderWidth: 1,
         yAxisID: 'y-pkr',
       },
       {
         label: 'Total Cost (USD)',
         data: usdData,
-        backgroundColor: 'rgba(153, 102, 255, 0.5)',
-        borderColor: 'rgba(153, 102, 255, 1)',
+        backgroundColor: '#9B9B9B', // Neutral color
+        borderColor: '#9B9B9B', // Neutral color
         borderWidth: 1,
         yAxisID: 'y-usd',
       },

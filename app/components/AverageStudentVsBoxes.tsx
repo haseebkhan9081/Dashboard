@@ -28,7 +28,7 @@ const AverageStudentVsBoxes: React.FC = () => {
   const attendanceWorkSheet = params.get("AttendanceWorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
+  const allParamsAvailable = attendanceSheet && quotationSheet && quotationWorkSheet && attendanceWorkSheet && expensesWorkSheet;
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['worksheets', quotationSheet, quotationWorkSheet, attendanceSheet, attendanceWorkSheet],
@@ -36,67 +36,47 @@ const AverageStudentVsBoxes: React.FC = () => {
       if (allParamsAvailable) {
         return fetchAllFiles(quotationSheet!, quotationWorkSheet!, attendanceSheet!, attendanceWorkSheet!);
       } else {
-        return Promise.resolve([]);
+        return Promise.resolve({}); // Handle missing params gracefully
       }
     },
     enabled: !!allParamsAvailable,
-    retry: 3, // Number of retry attempts
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
+  // Ensure data is always an object with default values
+  const {
+    averageBoxesCurrent = 0,
+    averageStudentsPresentCurrent = 0,
+    averageBoxesPrevious = 0,
+    averageStudentsPresentPrevious = 0,
+    currentWorksheet = '',
+    previousWorksheet = ''
+  } = data ?? {};
+
   const chartData: ChartData<'bar'> = {
     labels: [
-      `Average Boxes (${data.currentWorksheet})`, 
-      `Average Students Present (${data.currentWorksheet})`,
-      `Average Boxes (${data.previousWorksheet})`, 
-      `Average Students Present (${data.previousWorksheet})`
+      `Average Boxes (${currentWorksheet})`,
+      `Average Students Present (${currentWorksheet})`,
+      `Average Boxes (${previousWorksheet})`,
+      `Average Students Present (${previousWorksheet})`
     ],
     datasets: [
       {
         label: 'Average Boxes',
-        data: [
-          data.averageBoxesCurrent, 
-          null, // No data for students
-          data.averageBoxesPrevious, 
-          null  // No data for students
-        ],
-        backgroundColor: [
-          '#A2BD9D', // Primary color for current boxes
-          'rgba(0, 0, 0, 0)', // Transparent for spacing
-          '#A2BD9D', // Primary color for previous boxes
-          'rgba(0, 0, 0, 0)'  // Transparent for spacing
-        ],
-        borderColor: [
-          '#A2BD9D', // Primary color for current boxes
-          'rgba(0, 0, 0, 0)', // Transparent for spacing
-          '#A2BD9D', // Primary color for previous boxes
-          'rgba(0, 0, 0, 0)'  // Transparent for spacing
-        ],
+        data: [averageBoxesCurrent, null, averageBoxesPrevious, null],
+        backgroundColor: ['#A2BD9D', '#A2BD9D', '#A2BD9D', '#A2BD9D'],
+        borderColor: ['#A2BD9D', '#A2BD9D', '#A2BD9D', '#A2BD9D'],
         borderWidth: 1,
       },
       {
         label: 'Average Students Present',
-        data: [
-          null, // No data for boxes
-          data.averageStudentsPresentCurrent, 
-          null, // No data for boxes
-          data.averageStudentsPresentPrevious
-        ],
-        backgroundColor: [
-          'rgba(153, 102, 255, 0.5)', // Secondary color for current students
-          'rgba(153, 102, 255, 0.5)', // Secondary color for current students
-          'rgba(153, 102, 255, 0.5)', // Secondary color for previous students
-          'rgba(153, 102, 255, 0.5)'  // Secondary color for previous students
-        ],
-        borderColor: [
-          'rgba(153, 102, 255, 1)', // Secondary color for current students
-          'rgba(153, 102, 255, 1)', // Secondary color for current students
-          'rgba(153, 102, 255, 1)', // Secondary color for previous students
-          'rgba(153, 102, 255, 1)'  // Secondary color for previous students
-        ],
+        data: [null, averageStudentsPresentCurrent, null, averageStudentsPresentPrevious],
+        backgroundColor: ['#9B9B9B', '#9B9B9B', '#9B9B9B', '#9B9B9B'],
+        borderColor: ['#9B9B9B', '#9B9B9B', '#9B9B9B', '#9B9B9B'],
         borderWidth: 1,
       },
     ],
@@ -119,7 +99,7 @@ const AverageStudentVsBoxes: React.FC = () => {
         beginAtZero: true,
       },
       x: {
-        stacked: true, // Stack bars to avoid extra space
+        stacked: true,
       },
     },
   };

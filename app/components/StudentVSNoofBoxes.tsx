@@ -50,7 +50,6 @@ const StudentVSNoofBoxes: React.FC = () => {
     enabled: !!allParamsAvailable, // Only fetch if all params are available
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
-  
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -76,15 +75,15 @@ const StudentVSNoofBoxes: React.FC = () => {
       {
         label: 'Number of Boxes',
         data: cleanedData.map(entry => entry.NoOfBoxes),
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: '#A2BD9D', // Primary color
+        backgroundColor: 'rgba(162, 189, 157, 0.2)', // Light version of primary color
         fill: true,
       },
       {
         label: 'Number of Presents',
         data: cleanedData.map(entry => entry.NoOfPresents),
-        borderColor: 'rgba(153, 102, 255, 1)',
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        borderColor: '#9B9B9B', // Neutral color
+        backgroundColor: 'rgba(155, 155, 155, 0.2)', // Light neutral color
         fill: true,
       },
     ],
@@ -92,10 +91,10 @@ const StudentVSNoofBoxes: React.FC = () => {
 
   const options: ChartOptions<'line'> = {
     responsive: true,
-  maintainAspectRatio: false,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const, // 'top' must be typed as const
+        position: 'top' as const,
       },
       title: {
         display: true,
@@ -105,11 +104,9 @@ const StudentVSNoofBoxes: React.FC = () => {
   };
 
   return (
-     
-      <div className="h-[400px] p-4 md:p-6 w-full md:w-[1200px]">
-        <Line data={chartData} options={options} />
-      </div>
-    
+    <div className="h-[400px] p-4 md:p-6 w-full md:w-[1200px]">
+      <Line data={chartData} options={options} />
+    </div>
   );
 };
 

@@ -8,9 +8,7 @@ import { ChartData, ChartOptions } from 'chart.js';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 const fetchAllFiles = async (
- 
   quotationSheet: string,
- 
   expensesWorkSheet: string
 ) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/expenses?quotationSheet=${quotationSheet}&expensesWorkSheet=${expensesWorkSheet}`);
@@ -28,21 +26,20 @@ const Expenses: React.FC = () => {
   const attendanceWorkSheet = params.get("AttendanceWorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet!=null && quotationSheet!=null && quotationWorkSheet!=null && attendanceWorkSheet!=null && expensesWorkSheet!=null;
+  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets',quotationSheet,expensesWorkSheet],
+    queryKey: ['worksheets', quotationSheet, expensesWorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles( quotationSheet!, expensesWorkSheet!);
+        return fetchAllFiles(quotationSheet!, expensesWorkSheet!);
       } else {
         return Promise.resolve([]);
       }
     },
     enabled: !!allParamsAvailable,
     retry: 3, // Number of retry attempts
-  retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
-
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -54,8 +51,8 @@ const Expenses: React.FC = () => {
       {
         label: 'Amount',
         data: [data.salarySum, data.otherExpensesSum],
-        backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+        backgroundColor: ['#A2BD9D', '#9B9B9B'], // Use primary color and a neutral color for contrast
+        borderColor: ['#A2BD9D', '#9B9B9B'],
         borderWidth: 1,
       },
     ],

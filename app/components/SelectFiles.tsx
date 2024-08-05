@@ -45,7 +45,7 @@ const SelectFiles: React.FC = () => {
       <Button
       variant={"outline"}
         onClick={toggleVisibility}
-        className='mt-4 px-8 bg-blue-500
+        className='mt-4 px-8 bg-[#A2BD9D]
         mb-4
          
         text-white rounded'
