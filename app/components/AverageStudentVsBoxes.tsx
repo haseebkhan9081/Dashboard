@@ -42,7 +42,6 @@ const AverageStudentVsBoxes: React.FC = () => {
     enabled: !!allParamsAvailable,
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
-
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -52,33 +51,51 @@ const AverageStudentVsBoxes: React.FC = () => {
     labels: [
       `Average Boxes (${data.currentWorksheet})`, 
       `Average Students Present (${data.currentWorksheet})`,
-      '', // Spacer
       `Average Boxes (${data.previousWorksheet})`, 
       `Average Students Present (${data.previousWorksheet})`
     ],
     datasets: [
       {
-        label: 'Counts',
+        label: 'Average Boxes',
         data: [
           data.averageBoxesCurrent, 
-          data.averageStudentsPresentCurrent, 
-          null, // Spacer
+          null, // No data for students
           data.averageBoxesPrevious, 
+          null  // No data for students
+        ],
+        backgroundColor: [
+          '#A2BD9D', // Primary color for current boxes
+          'rgba(0, 0, 0, 0)', // Transparent for spacing
+          '#A2BD9D', // Primary color for previous boxes
+          'rgba(0, 0, 0, 0)'  // Transparent for spacing
+        ],
+        borderColor: [
+          '#A2BD9D', // Primary color for current boxes
+          'rgba(0, 0, 0, 0)', // Transparent for spacing
+          '#A2BD9D', // Primary color for previous boxes
+          'rgba(0, 0, 0, 0)'  // Transparent for spacing
+        ],
+        borderWidth: 1,
+      },
+      {
+        label: 'Average Students Present',
+        data: [
+          null, // No data for boxes
+          data.averageStudentsPresentCurrent, 
+          null, // No data for boxes
           data.averageStudentsPresentPrevious
         ],
         backgroundColor: [
-          'rgba(75, 192, 192, 0.5)', 
-          'rgba(153, 102, 255, 0.5)', 
-          'rgba(0, 0, 0, 0)', // Spacer
-          'rgba(255, 206, 86, 0.5)', 
-          'rgba(54, 162, 235, 0.5)'
+          'rgba(153, 102, 255, 0.5)', // Secondary color for current students
+          'rgba(153, 102, 255, 0.5)', // Secondary color for current students
+          'rgba(153, 102, 255, 0.5)', // Secondary color for previous students
+          'rgba(153, 102, 255, 0.5)'  // Secondary color for previous students
         ],
         borderColor: [
-          'rgba(75, 192, 192, 1)', 
-          'rgba(153, 102, 255, 1)', 
-          'rgba(0, 0, 0, 0)', // Spacer
-          'rgba(255, 206, 86, 1)', 
-          'rgba(54, 162, 235, 1)'
+          'rgba(153, 102, 255, 1)', // Secondary color for current students
+          'rgba(153, 102, 255, 1)', // Secondary color for current students
+          'rgba(153, 102, 255, 1)', // Secondary color for previous students
+          'rgba(153, 102, 255, 1)'  // Secondary color for previous students
         ],
         borderWidth: 1,
       },
@@ -100,6 +117,9 @@ const AverageStudentVsBoxes: React.FC = () => {
     scales: {
       y: {
         beginAtZero: true,
+      },
+      x: {
+        stacked: true, // Stack bars to avoid extra space
       },
     },
   };

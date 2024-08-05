@@ -39,8 +39,7 @@ const AverageStudentPerClass: React.FC = () => {
     },
     enabled: !!allParamsAvailable,
     retry: 3, // Number of retry attempts
-   retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
-
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -52,8 +51,8 @@ const AverageStudentPerClass: React.FC = () => {
       {
         label: 'Average Students Present',
         data: data.map((d: { average: number }) => d.average),
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: '#A2BD9D', // Primary color
+        borderColor: '#A2BD9D', // Primary color
         borderWidth: 1,
       },
     ],

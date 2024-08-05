@@ -1,16 +1,13 @@
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale } from 'chart.js';
 import { ChartData, ChartOptions } from 'chart.js';
 
-ChartJS.register(ArcElement, Title, Tooltip, Legend);
+ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale);
 
-const fetchAllFiles = async (
-  quotationSheet: string,
-  quotationWorkSheet: string,
-) => {
+const fetchAllFiles = async (quotationSheet: string, quotationWorkSheet: string) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCost?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -39,34 +36,66 @@ const MealCost: React.FC = () => {
     },
     enabled: !!allParamsAvailable,
     retry: 3, // Number of retry attempts
-   retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
-
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
-  // Total cost in PKR and conversion to USD
-  const totalCostPKR = data?.totalCostFor200Meals || 0;
+  // Convert the data into a format suitable for the bar chart
   const exchangeRate = 280; // PKR to USD exchange rate
-  const totalCostUSD = totalCostPKR / exchangeRate;
+  const chartLabels = Object.keys(data);
+  const pkrData = chartLabels.map(month => data[month]);
+  const usdData = pkrData.map(cost => cost / exchangeRate);
 
-  const chartData: ChartData<'pie'> = {
-    labels: ['Total Cost (PKR)', 'Total Cost (USD)'],
+  const chartData: ChartData<'bar'> = {
+    labels: chartLabels,
     datasets: [
       {
-        label: 'Cost',
-        data: [totalCostPKR, totalCostUSD],
-        backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+        label: 'Total Cost (PKR)',
+        data: pkrData,
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+        borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
+        yAxisID: 'y-pkr',
+      },
+      {
+        label: 'Total Cost (USD)',
+        data: usdData,
+        backgroundColor: 'rgba(153, 102, 255, 0.5)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
+        yAxisID: 'y-usd',
       },
     ],
   };
 
-  const options: ChartOptions<'pie'> = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      'y-pkr': {
+        type: 'linear',
+        display: true,
+        position: 'left',
+        title: {
+          display: true,
+          text: 'Total Cost (PKR)',
+        },
+      },
+      'y-usd': {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        title: {
+          display: true,
+          text: 'Total Cost (USD)',
+        },
+        grid: {
+          drawOnChartArea: false, // only want the grid lines for one axis to show up
+        },
+      },
+    },
     plugins: {
       legend: {
         position: 'top' as const,
@@ -79,8 +108,8 @@ const MealCost: React.FC = () => {
   };
 
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full md:w-[400px]">
-      <Pie data={chartData} options={options} />
+    <div className="h-[400px] p-4 md:p-6 w-full md:w-[600px]">
+      <Bar data={chartData} options={options} />
     </div>
   );
 };
