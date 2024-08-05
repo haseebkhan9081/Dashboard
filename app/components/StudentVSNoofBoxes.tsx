@@ -95,10 +95,22 @@ const StudentVSNoofBoxes: React.FC = () => {
     plugins: {
       legend: {
         position: 'top' as const,
+         
       },
       title: {
         display: true,
         text: 'Number of Boxes vs Number of Students',
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            // Customize tooltip labels as needed
+            return tooltipItem.dataset.label + ': ' + tooltipItem.formattedValue;
+          },
+        },
+      },
+      datalabels: {
+        display: false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
       },
     },
     scales: {
@@ -110,10 +122,16 @@ const StudentVSNoofBoxes: React.FC = () => {
         },
       },
       y: {
-        
+        ticks: {
+          callback: function(value) {
+            return value.toLocaleString(); // Format numbers with commas
+          },
+        },
       },
     },
   };
+  
+  
 
   return (
     <div className="h-[400px] p-4 md:p-6 w-full md:w-[1200px]">
