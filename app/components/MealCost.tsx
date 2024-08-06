@@ -8,8 +8,8 @@ import { ChartData, ChartOptions } from 'chart.js';
 
 ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale, ChartDataLabels);
 
-const fetchAllFiles = async (quotationSheet: string, quotationWorkSheet: string) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCost?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}`);
+const fetchAllFiles = async (quotationSheet: string, WorkSheet: string) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCost?quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -20,17 +20,16 @@ const MealCost: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
-  const attendanceWorkSheet = params.get("AttendanceWorkSheet");
+  const  WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
+  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && WorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, quotationWorkSheet],
+    queryKey: ['worksheets', quotationSheet, WorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, quotationWorkSheet!);
+        return fetchAllFiles(quotationSheet!, WorkSheet!);
       } else {
         return Promise.resolve({});
       }
@@ -82,6 +81,15 @@ const MealCost: React.FC = () => {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
+      x: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
+      },
       'y-pkr': {
         beginAtZero: true,
         type: 'linear',
@@ -118,21 +126,39 @@ const MealCost: React.FC = () => {
     },
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: 'top',
+        labels: {
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          color: '#333',
+        },
+        
       },
       title: {
         display: true,
+        
+        font: {
+          weight: 'bold',
+          size: 16,
+        },
+        color: '#333',
+        
         text: 'Total Cost Paid to Vendor (PKR vs USD)',
       },
       datalabels: {
         display: true,
-        color: '#444',
+        color: 'black',
+        font: {
+          weight: 'bold',
+          size: 12,
+        },
+         
         anchor: 'center', // Position the labels inside the bar
         align: 'center', // Center-align the labels
         formatter: (value) => value.toLocaleString(), // Format numbers with commas
-        font: {
-          size: 10, // Adjust font size as needed
-        },
+        
         clamp: true, // Ensures labels fit within bar
         padding: {
           top: 4, 

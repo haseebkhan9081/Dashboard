@@ -18,16 +18,14 @@ const DashBoard: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
-  const attendanceWorkSheet = params.get("AttendanceWorkSheet");
+  const  WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
   // Determine if all required parameters are available
   const isParamsAvailable = 
     attendanceSheet !== null &&
     quotationSheet !== null &&
-    quotationWorkSheet !== null &&
-    attendanceWorkSheet !== null &&
+    WorkSheet !== null &&
     expensesWorkSheet !== null;
    
   // Example data - replace these with actual fetched data

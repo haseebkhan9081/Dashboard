@@ -22,11 +22,10 @@ const Expenses: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
-  const attendanceWorkSheet = params.get("AttendanceWorkSheet");
+  const  WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
+  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null   && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['worksheets', quotationSheet, expensesWorkSheet],
@@ -62,16 +61,54 @@ const Expenses: React.FC = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
+      datalabels: {
+        display: true,
+        color: 'black',
+        font: {
+          weight: 'bold',
+          size: 12,
+        },
+      },
       legend: {
-        position: 'top' as const,
+        position: 'top',
+        labels: {
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          color: '#333',
+        },
       },
       title: {
         display: true,
+        
+        font: {
+          weight: 'bold',
+          size: 16,
+        },
+        color: '#333',
         text: 'Salary vs Other Expenses',
       },
     },
     scales: {
+      x: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
+        beginAtZero: true,
+      },
       y: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
         beginAtZero: true,
       },
     },

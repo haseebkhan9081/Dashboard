@@ -9,9 +9,9 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
 
 const fetchAllFiles = async (
   attendanceSheet: string,
-  attendanceWorkSheet: string
+  WorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/studentAveragePerClass?attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${attendanceWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/studentAveragePerClass?attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${WorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -22,17 +22,17 @@ const AverageStudentPerClass: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
-  const attendanceWorkSheet = params.get("AttendanceWorkSheet");
+  const  WorkSheet = params.get("WorkSheet");
+
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && quotationWorkSheet != null && attendanceWorkSheet != null && expensesWorkSheet != null;
+  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', attendanceSheet, attendanceWorkSheet],
+    queryKey: ['worksheets', attendanceSheet, WorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(attendanceSheet!, attendanceWorkSheet!);
+        return fetchAllFiles(attendanceSheet!, WorkSheet!);
       } else {
         return Promise.resolve([]);
       }
@@ -64,17 +64,54 @@ const AverageStudentPerClass: React.FC = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
+      datalabels: {
+        display: true,
+        color: 'black',
+        font: {
+          weight: 'bold',
+          size: 12,
+        },
+      },
       legend: {
-        position: 'top' as const,
+        position: 'top',
+        labels: {
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          color: '#333',
+        },
       },
       title: {
         display: true,
+        
+        font: {
+          weight: 'bold',
+          size: 16,
+        },
+        color: '#333',
         text: 'Average Students Present Per Department in the last 7 Days',
       },
     },
     scales: {
       x: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
         beginAtZero: true,
+      },
+      y: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
       },
     },
   };

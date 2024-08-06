@@ -9,11 +9,10 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend,
 
 const fetchAllFiles = async (
   quotationSheet: string,
-  quotationWorkSheet: string,
   attendanceSheet: string,
-  attendanceWorkSheet: string
+  WorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCostStudentAverage?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}&attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${attendanceWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/AverageStudentVsBoxes?quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}&attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${WorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -24,17 +23,16 @@ const AverageStudentVsBoxes: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
-  const attendanceWorkSheet = params.get("AttendanceWorkSheet");
+  const WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet && quotationSheet && quotationWorkSheet && attendanceWorkSheet && expensesWorkSheet;
+  const allParamsAvailable = attendanceSheet && quotationSheet && WorkSheet && expensesWorkSheet;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, quotationWorkSheet, attendanceSheet, attendanceWorkSheet],
+    queryKey: ['worksheets', quotationSheet, attendanceSheet, WorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, quotationWorkSheet!, attendanceSheet!, attendanceWorkSheet!);
+        return fetchAllFiles(quotationSheet!, attendanceSheet!, WorkSheet!);
       } else {
         return Promise.resolve({}); // Handle missing params gracefully
       }
@@ -52,7 +50,7 @@ const AverageStudentVsBoxes: React.FC = () => {
   const labels = Object.keys(data || {});
   const averageBoxes = labels.map(label => roundUp(data[label]?.averageBoxes || 0));
   const averageStudentsPresent = labels.map(label => roundUp(data[label]?.averageStudentsPresent || 0));
-
+console.log("data :",data);
   const chartData: ChartData<'bar', number[], string> = {
     labels,
     datasets: [
@@ -75,18 +73,54 @@ const AverageStudentVsBoxes: React.FC = () => {
 
   const chartOptions: ChartOptions<'bar'> = {
     responsive: true,
-    maintainAspectRatio:false,
+    maintainAspectRatio: false,
     plugins: {
       datalabels: {
         display: true,
         color: 'black',
+        font: {
+          weight: 'bold',
+          size: 12,
+        },
       },
       legend: {
         position: 'top',
+        labels: {
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          color: '#333',
+        },
       },
       title: {
         display: true,
         text: 'Average Student vs Boxes',
+        font: {
+          weight: 'bold',
+          size: 16,
+        },
+        color: '#333',
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
+      },
+      y: {
+        ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
+        },
       },
     },
   };

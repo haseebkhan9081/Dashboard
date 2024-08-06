@@ -5,9 +5,9 @@ import { parse, format } from 'date-fns';
 
 const fetchAllFiles = async (
   quotationSheet: string,
-  quotationWorkSheet: string
+  WorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealsServedLast7days?quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealsServedLast7days?quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -17,15 +17,15 @@ const fetchAllFiles = async (
 const MealsLastWeek: React.FC = () => {
   const params = useSearchParams();
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
+  const  WorkSheet = params.get("WorkSheet");
 
-  const allParamsAvailable = quotationSheet != null && quotationWorkSheet != null;
+  const allParamsAvailable = quotationSheet != null && WorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['mealsLast7Days', quotationSheet, quotationWorkSheet],
+    queryKey: ['mealsLast7Days', quotationSheet, WorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, quotationWorkSheet!);
+        return fetchAllFiles(quotationSheet!, WorkSheet!);
       } else {
         return Promise.resolve([]);
       }

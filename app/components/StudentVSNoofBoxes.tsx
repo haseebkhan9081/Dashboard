@@ -16,11 +16,10 @@ type File = {
 const fetchAllFiles = async (
   attendanceSheet: string,
   quotationSheet: string,
-  quotationWorkSheet: string,
-  attendanceWorkSheet: string,
+  WorkSheet: string,
   expensesWorkSheet: string
 ): Promise<File[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/Studentsvsboxes?attendanceSheet=${attendanceSheet}&quotationSheet=${quotationSheet}&quotationWorkSheet=${quotationWorkSheet}&attendanceWorkSheet=${attendanceWorkSheet}&expensesWorkSheet=${expensesWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/Studentsvsboxes?attendanceSheet=${attendanceSheet}&quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}&attendanceWorkSheet=${WorkSheet}&expensesWorkSheet=${expensesWorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -32,17 +31,16 @@ const StudentVSNoofBoxes: React.FC = () => {
 
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const quotationWorkSheet = params.get("QuotationWorkSheet");
-  const attendanceWorkSheet = params.get("AttendanceWorkSheet");
+  const  WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet && quotationSheet && quotationWorkSheet && attendanceWorkSheet && expensesWorkSheet;
+  const allParamsAvailable = attendanceSheet && quotationSheet && WorkSheet && expensesWorkSheet;
 
   const { data, error, isLoading } = useQuery<File[]>({
-    queryKey: ['worksheets', attendanceSheet, quotationSheet, quotationWorkSheet, attendanceWorkSheet, expensesWorkSheet],
+    queryKey: ['worksheets', attendanceSheet, quotationSheet, WorkSheet,expensesWorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(attendanceSheet!, quotationSheet!, quotationWorkSheet!, attendanceWorkSheet!, expensesWorkSheet!);
+        return fetchAllFiles(attendanceSheet!, quotationSheet!,  WorkSheet, expensesWorkSheet!);
       } else {
         return Promise.resolve([]); // Return an empty array if not all params are available
       }
@@ -92,13 +90,30 @@ const StudentVSNoofBoxes: React.FC = () => {
   const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    
     plugins: {
+
       legend: {
-        position: 'top' as const,
+        position: 'top',
+        labels: {
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          color: '#333',
+        },
+       
          
       },
       title: {
         display: true,
+        
+        font: {
+          weight: 'bold',
+          size: 16,
+        },
+        color: '#333',
+        
         text: 'Number of Boxes vs Number of Students',
       },
       tooltip: {
@@ -110,6 +125,7 @@ const StudentVSNoofBoxes: React.FC = () => {
         },
       },
       datalabels: {
+
         display: false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
       },
     },
@@ -117,12 +133,23 @@ const StudentVSNoofBoxes: React.FC = () => {
       x: {
         ticks: {
           // Rotate x-axis labels to vertical
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
           maxRotation: 90, // Max rotation angle
           minRotation: 90, // Min rotation angle
         },
       },
       y: {
+        beginAtZero:true,
         ticks: {
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          color: '#333',
           callback: function(value) {
             return value.toLocaleString(); // Format numbers with commas
           },
