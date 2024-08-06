@@ -44,9 +44,7 @@ const DashBoard: React.FC = () => {
         <h1 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold text-center mb-4">
           DashBoard NourishEd {new Date().getFullYear()}
         </h1>
-        <p className="text-lg md:text-xl text-gray-600 text-center">
-          Analyze the key metrics and insights for effective management.
-        </p>
+        
       </div>
 
       {/* Statistics Section */}

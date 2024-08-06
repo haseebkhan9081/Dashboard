@@ -12,9 +12,7 @@ const Analytics: React.FC = () => {
       <h2 className="text-3xl font-bold text-center text-primary mb-4">
         Comprehensive Analytics Dashboard
       </h2>
-      <p className="text-lg text-center text-slate-600 mb-6">
-        Get detailed insights into student attendance, meal costs, and more.
-      </p>
+      
       <div className="flex flex-col w-full justify-center items-center space-y-6">
         <StudentVSNoofBoxes />
         <div className='md:flex-row md:w-full md:justify-center md:items-center md:gap-x-6 md:flex'>
