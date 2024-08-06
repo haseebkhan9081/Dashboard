@@ -80,14 +80,27 @@ const MealCost: React.FC = () => {
   const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 10,
+        right: 10,
+        bottom: 20, // Add padding to the bottom
+        left: 10,
+      },
+    },
     scales: {
       x: {
         ticks: {
           font: {
             weight: 'bold',
-            size: 12,
+            size: 10, // Reduce font size for mobile
           },
           color: '#333',
+          autoSkip: true, // Automatically skip labels if there are too many
+           
+        },
+        grid: {
+          display: false, // Hide x-axis grid lines if not needed
         },
       },
       'y-pkr': {
@@ -95,14 +108,14 @@ const MealCost: React.FC = () => {
         type: 'linear',
         position: 'left',
         min: 0,
-        max: maxPKR, // Set max value to include extra space
+        max: maxPKR,
         ticks: {
           callback: function (value) {
-            return value.toLocaleString(); // Format numbers with commas
+            return value.toLocaleString();
           }
         },
         title: {
-          display: false, // Remove title for PKR axis
+          display: false,
         },
       },
       'y-usd': {
@@ -110,17 +123,17 @@ const MealCost: React.FC = () => {
         type: 'linear',
         position: 'right',
         min: 0,
-        max: maxUSD, // Set max value to include extra space
+        max: maxUSD,
         grid: {
-          drawOnChartArea: false, // only want the grid lines for one axis to show up
+          drawOnChartArea: false,
         },
         ticks: {
           callback: function (value) {
-            return value.toLocaleString(); // Format numbers with commas
+            return value.toLocaleString();
           }
         },
         title: {
-          display: false, // Remove title for USD axis
+          display: false,
         },
       },
     },
@@ -134,17 +147,14 @@ const MealCost: React.FC = () => {
           },
           color: '#333',
         },
-        
       },
       title: {
         display: true,
-        
         font: {
           weight: 'bold',
           size: 16,
         },
         color: '#333',
-        
         text: 'Total Cost Paid to Vendor (PKR vs USD)',
       },
       datalabels: {
@@ -154,21 +164,19 @@ const MealCost: React.FC = () => {
           weight: 'bold',
           size: 12,
         },
-         
-        anchor: 'center', // Position the labels inside the bar
-        align: 'center', // Center-align the labels
-        formatter: (value) => value.toLocaleString(), // Format numbers with commas
-        
-        clamp: true, // Ensures labels fit within bar
+        anchor: 'center',
+        align: 'center',
+        formatter: (value) => value.toLocaleString(),
+        clamp: true,
         padding: {
-          top: 4, 
-            // Adjust padding if needed
+          top: 4,
         },
-        clip: true, // Clips labels to ensure they do not overflow the chart area
-        rotation: 90, // Rotate labels to be vertical
+        clip: true,
+        rotation: 90,
       }
     },
   };
+  
 
   return (
     <div className="h-[400px] p-4 md:p-6 w-full md:w-[1200px]">
