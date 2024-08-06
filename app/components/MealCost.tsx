@@ -62,7 +62,7 @@ const MealCost: React.FC = () => {
         borderColor: '#A2BD9D', // Primary color
         borderWidth: 1,
         yAxisID: 'y-pkr',
-        barPercentage: 0.6, // Adjust this value to create more space between bars
+        barPercentage:0.9, // Adjust this value to create more space between bars
         categoryPercentage: 0.8, // Adjust this to control space between groups of bars (if there are multiple datasets)
       },
       {
@@ -72,7 +72,7 @@ const MealCost: React.FC = () => {
         borderColor: '#9B9B9B', // Neutral color
         borderWidth: 1,
         yAxisID: 'y-usd',
-        barPercentage: 0.6, // Adjust this value to create more space between bars
+        barPercentage: 0.9, // Adjust this value to create more space between bars
         categoryPercentage: 0.8, // Adjust this to control space between groups of bars (if there are multiple datasets)
       },
     ],

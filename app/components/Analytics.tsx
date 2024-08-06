@@ -22,10 +22,15 @@ const Analytics: React.FC = () => {
           <AverageStudentVsBoxes />
           <AverageStudentPerClass />
         </div>
-        <div className='md:flex-row md:w-full md:gap-x-6 md:flex md:justify-center md:items-center'>
-          <Expenses />
-          <MealsLastWeek />
-        </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+  <div className="w-full">
+    <Expenses />
+  </div>
+  <div className="w-full">
+    <MealsLastWeek />
+  </div>
+</div>
+
       </div>
     </div>
   );
