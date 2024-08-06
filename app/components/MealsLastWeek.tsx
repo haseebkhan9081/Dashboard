@@ -44,26 +44,28 @@ const MealsLastWeek: React.FC = () => {
   };
 
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full md:w-[800px]">
-      <h2 className="text-2xl font-bold mb-4 text-primary">Meals served in the last 7 days</h2>
-      <table className="min-w-full border-collapse border border-primary">
-        <thead>
-          <tr className="bg-primary text-primary-foreground">
-            <th className="border border-primary px-4 py-2">Day</th>
-            <th className="border border-primary px-4 py-2">Meal Name</th>
-            <th className="border border-primary px-4 py-2">Boxes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.last7DaysMeals.map((meal: { date: string, mealName: string, boxes: string }) => (
-            <tr key={meal.date}>
-              <td className="border border-primary px-4 py-2">{formatDate(meal.date)}</td>
-              <td className="border border-primary px-4 py-2">{meal.mealName}</td>
-              <td className="border border-primary px-4 py-2">{meal.boxes}</td>
+    <div className="p-4 md:p-6 w-full">
+      <h2 className="text-2xl font-bold mb-4 text-primary">Meals Served in the Last 7 Days</h2>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border-collapse border border-primary">
+          <thead>
+            <tr className="bg-primary text-primary-foreground">
+              <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Day</th>
+              <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Meal Name</th>
+              <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Boxes</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.last7DaysMeals.map((meal: { date: string, mealName: string, boxes: string }) => (
+              <tr key={meal.date}>
+                <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{formatDate(meal.date)}</td>
+                <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.mealName}</td>
+                <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.boxes}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

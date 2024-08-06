@@ -28,29 +28,27 @@ const SelectFiles: React.FC = () => {
   const buttonText = AttendanceSheet || QuotationSheet ? 'Edit' : 'Start';
 
   return (
-    <div className='w-full flex flex-col h-full justify-center items-center space-y-4'>
+    <div className="w-full flex flex-col h-full justify-center items-center space-y-4 p-4 md:p-6">
       {/* Render the component based on visibility state */}
       {isVisible && (
-      <><h2 className='text-xl font-medium'>Please Select the relevant Files</h2>
-        <div className='w-full flex flex-col h-full justify-center items-center space-y-4'>
-          <SelecttAttendanceSheet />
-          {AttendanceSheet && AttendanceSheet.length > 0 && <SelectAttendanceWorkSheet />}
-          <SelectQuotationSheet />
-          {QuotationSheet && QuotationSheet.length > 0 && <SelectQuotationWorkSheet />}
-          {QuotationSheet && QuotationSheet.length > 0 && <SelectExpensesWorkSheet />}
+        <div className="w-full max-w-3xl flex flex-col h-full justify-center items-center space-y-6">
+          <h2 className="text-2xl font-semibold text-primary">Please Select the Relevant Files</h2>
+          <div className="w-full flex flex-col space-y-4">
+            <SelecttAttendanceSheet />
+            {AttendanceSheet && AttendanceSheet.length > 0 && <SelectAttendanceWorkSheet />}
+            <SelectQuotationSheet />
+            {QuotationSheet && QuotationSheet.length > 0 && <SelectQuotationWorkSheet />}
+            {QuotationSheet && QuotationSheet.length > 0 && <SelectExpensesWorkSheet />}
+          </div>
         </div>
-        </>
       )}
       {/* Button to toggle visibility */}
       <Button
-      variant={"outline"}
+        variant="outline"
         onClick={toggleVisibility}
-        className='mt-4 px-8 bg-[#A2BD9D]
-        mb-4
-         
-        text-white rounded'
+        className="mt-6 px-8 py-2 bg-primary text-primary-foreground border border-primary rounded hover:bg-primary-dark focus:ring-2 focus:ring-primary focus:ring-opacity-50"
       >
-        {isVisible?"OK":buttonText}
+        {isVisible ? "OK" : buttonText}
       </Button>
     </div>
   );
