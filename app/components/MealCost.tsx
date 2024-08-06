@@ -77,7 +77,6 @@ const MealCost: React.FC = () => {
       },
     ],
   };
-  
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
@@ -128,8 +127,8 @@ const MealCost: React.FC = () => {
       datalabels: {
         display: true,
         color: '#444',
-        anchor: 'end',
-        align: 'top',
+        anchor: 'center', // Position the labels inside the bar
+        align: 'center', // Center-align the labels
         formatter: (value) => value.toLocaleString(), // Format numbers with commas
         font: {
           size: 10, // Adjust font size as needed
@@ -140,12 +139,13 @@ const MealCost: React.FC = () => {
             // Adjust padding if needed
         },
         clip: true, // Clips labels to ensure they do not overflow the chart area
+        rotation: 90, // Rotate labels to be vertical
       }
     },
   };
 
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full md:w-[600px]">
+    <div className="h-[400px] p-4 md:p-6 w-full md:w-[1200px]">
       <Bar data={chartData} options={options} />
     </div>
   );

@@ -3,6 +3,17 @@ import { useSearchParams } from 'next/navigation'; // Import useSearchParams
 import SelectFiles from './SelectFiles';
 import Analytics from './Analytics';
 
+import MetricsDisplay from './MetricsDisplay';
+
+
+
+
+
+
+
+
+
+
 const DashBoard: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
@@ -18,14 +29,29 @@ const DashBoard: React.FC = () => {
     quotationWorkSheet !== null &&
     attendanceWorkSheet !== null &&
     expensesWorkSheet !== null;
+   
+  // Example data - replace these with actual fetched data
+ 
+
+
+ 
+
+
 
   return (
     <div className="flex flex-col items-center space-y-6 p-3 w-full h-full md:p-6">
-      <div className="flex flex-row w-full justify-center items-center mb-6">
-        <h1 className="text-2xl md:text-3xl text-slate-800 font-semibold text-center">
+      <div className="flex flex-col w-full items-center mb-6">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold text-center mb-4">
           DashBoard NourishEd {new Date().getFullYear()}
         </h1>
+        <p className="text-lg md:text-xl text-gray-600 text-center">
+          Analyze the key metrics and insights for effective management.
+        </p>
       </div>
+
+      {/* Statistics Section */}
+      <MetricsDisplay/>
+
       <div className="flex flex-col w-full ">
         <SelectFiles />
         {isParamsAvailable ? (

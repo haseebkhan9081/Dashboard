@@ -4,6 +4,7 @@ import Expenses from './Expenses';
 import MealCost from './MealCost';
 import AverageStudentVsBoxes from './AverageStudentVsBoxes';
 import AverageStudentPerClass from './AverageStudentPerClass';
+import MealsLastWeek from './MealsLastWeek';
 
 const Analytics = () => {
   return (
@@ -16,7 +17,7 @@ const Analytics = () => {
          
         <div
         className='md:flex-row md:w-full md:justify-center md:items-center md:gap-x-6 md:flex'>
-          <Expenses />
+         
         
         
           <MealCost />
@@ -28,7 +29,11 @@ const Analytics = () => {
         
           <AverageStudentPerClass />
           </div>
-        
+        <div
+        className='md:flex-row md:w-full md:gap-x-6 md:flex md:justify-center md:items-center'>
+           <Expenses />
+          <MealsLastWeek/>
+          </div>
       </div>
     </div>
   );
