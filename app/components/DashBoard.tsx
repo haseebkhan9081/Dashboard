@@ -55,7 +55,7 @@ const DashBoard: React.FC = () => {
         ) : (
           <div className="text-center mt-4 p-4 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-lg shadow-sm">
             <p className="text-sm md:text-base">
-              Please select the relevant files to view the analytics.
+              Please select the relevant Month to view the analytics.
             </p>
           </div>
         )}
