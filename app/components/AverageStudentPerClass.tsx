@@ -117,7 +117,7 @@ const AverageStudentPerClass: React.FC = () => {
   };
 
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full md:w-[800px]">
+    <div className="h-[400px] p-4 md:p-6 w-full">
       <Bar data={chartData} options={options} />
     </div>
   );

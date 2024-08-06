@@ -8,29 +8,35 @@ import MealsLastWeek from './MealsLastWeek';
 
 const Analytics: React.FC = () => {
   return (
-    <div className="flex flex-col w-full h-full p-3 space-y-6 md:p-6">
-      <h2 className="text-3xl font-bold text-center text-primary mb-4">
+    <div className="p-3 md:p-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <h2 className="text-3xl font-bold text-center text-primary mb-4 col-span-full">
         Comprehensive Analytics Dashboard
       </h2>
       
-      <div className="flex flex-col w-full justify-center items-center space-y-6">
+      <div className="col-span-full lg:col-span-2 xl:col-span-4 w-full">
         <StudentVSNoofBoxes />
-        <div className='md:flex-row md:w-full md:justify-center md:items-center md:gap-x-6 md:flex'>
-          <MealCost />
-        </div>
-        <div className='md:flex-row md:w-full md:gap-x-6 md:flex md:justify-center md:items-center'>
+      </div>
+      
+      <div className="col-span-full lg:col-span-2 xl:col-span-4 w-full">
+        <MealCost />
+      </div>
+      
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+        <div className="w-full">
           <AverageStudentVsBoxes />
+        </div>
+        <div className="w-full">
           <AverageStudentPerClass />
         </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-  <div className="w-full">
-    <Expenses />
-  </div>
-  <div className="w-full">
-    <MealsLastWeek />
-  </div>
-</div>
-
+      </div>
+      
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+        <div className="w-full">
+          <Expenses />
+        </div>
+        <div className="w-full">
+          <MealsLastWeek />
+        </div>
       </div>
     </div>
   );
