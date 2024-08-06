@@ -47,82 +47,53 @@ const AverageStudentVsBoxes: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
-  // Helper function to round up values
   const roundUp = (value: number) => Math.ceil(value);
 
-  // Ensure data is always an object with default values
-  const {
-    averageBoxesCurrent = 0,
-    averageStudentsPresentCurrent = 0,
-    averageBoxesPrevious = 0,
-    averageStudentsPresentPrevious = 0,
-    currentWorksheet = '',
-    previousWorksheet = ''
-  } = data ?? {};
+  const labels = Object.keys(data || {});
+  const averageBoxes = labels.map(label => roundUp(data[label]?.averageBoxes || 0));
+  const averageStudentsPresent = labels.map(label => roundUp(data[label]?.averageStudentsPresent || 0));
 
-  const chartData: ChartData<'bar'> = {
-    labels: [
-      `Average Boxes (${currentWorksheet})`,
-      `Average Students Present (${currentWorksheet})`,
-      `Average Boxes (${previousWorksheet})`,
-      `Average Students Present (${previousWorksheet})`
-    ],
+  const chartData: ChartData<'bar', number[], string> = {
+    labels,
     datasets: [
       {
         label: 'Average Boxes',
-        data: [roundUp(averageBoxesCurrent), null, roundUp(averageBoxesPrevious), null],
-        backgroundColor: ['#A2BD9D', '#A2BD9D', '#A2BD9D', '#A2BD9D'],
-        borderColor: ['#A2BD9D', '#A2BD9D', '#A2BD9D', '#A2BD9D'],
+        data: averageBoxes,
+        backgroundColor: '#A2BD9D',
+        borderColor: '#A2BD9D',
         borderWidth: 1,
       },
       {
         label: 'Average Students Present',
-        data: [null, roundUp(averageStudentsPresentCurrent), null, roundUp(averageStudentsPresentPrevious)],
-        backgroundColor: ['#9B9B9B', '#9B9B9B', '#9B9B9B', '#9B9B9B'],
-        borderColor: ['#9B9B9B', '#9B9B9B', '#9B9B9B', '#9B9B9B'],
+        data: averageStudentsPresent,
+        backgroundColor: '#9B9B9B',
+        borderColor: '#9B9B9B',
         borderWidth: 1,
       },
     ],
   };
 
-  const options: ChartOptions<'bar'> = {
+  const chartOptions: ChartOptions<'bar'> = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio:false,
     plugins: {
+      datalabels: {
+        display: true,
+        color: 'black',
+      },
       legend: {
-        position: 'top' as const,
+        position: 'top',
       },
       title: {
         display: true,
-        text: 'Average Boxes and Students Present',
-      },
-      datalabels: {
-        display: true,
-        color: '#444',
-        anchor: 'end',
-        align: 'top',
-        formatter: (value) => value !== null ? value.toString() : '',
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: Math.max(
-          roundUp(averageBoxesCurrent), 
-          roundUp(averageBoxesPrevious), 
-          roundUp(averageStudentsPresentCurrent), 
-          roundUp(averageStudentsPresentPrevious)
-        ) + 10, // Add 10 to provide additional space
-      },
-      x: {
-        stacked: true,
+        text: 'Average Student vs Boxes',
       },
     },
   };
 
   return (
     <div className="h-[400px] p-4 md:p-6 w-full md:w-[800px]">
-      <Bar data={chartData} options={options} />
+      <Bar data={chartData} options={chartOptions} />
     </div>
   );
 };

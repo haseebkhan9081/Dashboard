@@ -80,7 +80,7 @@ const StudentVSNoofBoxes: React.FC = () => {
         fill: true,
       },
       {
-        label: 'Number of Presents',
+        label: 'Number of Students',
         data: cleanedData.map(entry => entry.NoOfPresents),
         borderColor: '#9B9B9B', // Neutral color
         backgroundColor: 'rgba(155, 155, 155, 0.2)', // Light neutral color

@@ -43,6 +43,11 @@ const MealsLastWeek: React.FC = () => {
     return format(date, 'EEEE');
   };
 
+  const formatDateFull = (dateString: string) => {
+    const date = parse(dateString, 'MM/dd/yyyy', new Date());
+    return format(date, 'MM/dd/yyyy');
+  };
+
   return (
     <div className="p-4 md:p-6 w-full">
       <h2 className="text-2xl font-bold mb-4 text-primary">Meals Served in the Last 7 Days</h2>
@@ -51,6 +56,7 @@ const MealsLastWeek: React.FC = () => {
           <thead>
             <tr className="bg-primary text-primary-foreground">
               <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Day</th>
+              <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Date</th>
               <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Meal Name</th>
               <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Boxes</th>
             </tr>
@@ -59,6 +65,7 @@ const MealsLastWeek: React.FC = () => {
             {data.last7DaysMeals.map((meal: { date: string, mealName: string, boxes: string }) => (
               <tr key={meal.date}>
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{formatDate(meal.date)}</td>
+                <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{formatDateFull(meal.date)}</td>
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.mealName}</td>
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.boxes}</td>
               </tr>
