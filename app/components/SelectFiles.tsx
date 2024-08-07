@@ -15,7 +15,7 @@ interface File {
 }
 
 const SelectFiles: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false); // State to manage visibility
+  const [isVisible, setIsVisible] = useState(true); // State to manage visibility
   const params = useSearchParams();
   const AttendanceSheet = params.get("AttendanceSheet");
   const QuotationSheet = params.get("QuotationSheet");
@@ -41,13 +41,7 @@ const SelectFiles: React.FC = () => {
         </div>
       )}
       {/* Button to toggle visibility */}
-      <Button
-        variant="outline"
-        onClick={toggleVisibility}
-        className="mt-6 px-8 py-2 bg-primary text-primary-foreground border border-primary rounded hover:bg-primary-dark focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-      >
-        {isVisible ? "OK" : buttonText}
-      </Button>
+      
     </div>
   );
 };

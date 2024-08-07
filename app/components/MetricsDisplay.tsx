@@ -44,11 +44,14 @@ const MetricsDisplay: React.FC = () => {
   if (mealsLoading || studentsLoading) return <div>Loading...</div>;
   if (mealsError) return <div>Error fetching total meals served: {(mealsError as Error).message}</div>;
   if (studentsError) return <div>Error fetching average students: {(studentsError as Error).message}</div>;
-
+console.log("date",mealsData);
   return (
     <div className="flex flex-col w-full md:w-3/4 lg:w-1/2 space-y-4 mb-6">
       <div className="bg-primary text-primary-foreground p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold">Total Meals Served</h2>
+      <h2 className="text-xl font-semibold">
+  Total Meals Served till <span className="text-2xl font-bold">{mealsData?.formattedLatestDate||0}</span>
+</h2>
+
         <p className="text-3xl font-bold">{mealsData?.totalMealsServed?.toLocaleString() || '0'}</p>
       </div>
       <div className="bg-primary text-primary-foreground p-6 rounded-lg shadow-lg">
