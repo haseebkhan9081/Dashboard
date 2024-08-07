@@ -143,7 +143,7 @@ const StudentVSNoofBoxes: React.FC = () => {
         },
       },
       y: {
-        beginAtZero:true,
+        min:80,
         ticks: {
           font: {
             weight: 'bold',

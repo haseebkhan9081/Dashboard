@@ -12,7 +12,7 @@ const fetchAllFiles = async (
   attendanceSheet: string,
   WorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/AverageStudentVsBoxes?quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}&attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${WorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/AverageStudentVsBoxes?quotationSheet=${quotationSheet}&attendanceSheet=${attendanceSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

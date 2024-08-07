@@ -50,7 +50,7 @@ const MealCost: React.FC = () => {
 
   const maxPKR = Math.max(...pkrData) * 1.2; // Adjust this multiplier to add extra space
   const maxUSD = Math.max(...usdData) * 1.2; // Adjust this multiplier to add extra space
-
+  const getFontSize = () => window.innerWidth < 640 ? 10 : 12;
   const chartData: ChartData<'bar'> = {
     labels: chartLabels,
     datasets: [
@@ -93,7 +93,7 @@ const MealCost: React.FC = () => {
         ticks: {
           font: {
             weight: 'bold',
-            size: 10, // Reduce font size for mobile
+            size: getFontSize(), // Reduce font size for mobile
           },
           color: '#333',
           autoSkip: true, // Automatically skip labels if there are too many
@@ -162,7 +162,7 @@ const MealCost: React.FC = () => {
         color: 'black',
         font: {
           weight: 'bold',
-          size: 12,
+          size: 10,
         },
         anchor: 'center',
         align: 'center',
