@@ -40,7 +40,7 @@ const DashBoard: React.FC = () => {
     <div className="flex flex-col items-center space-y-6 p-3 w-full h-full md:p-6">
       <div className="flex flex-col w-full items-center mb-6">
         <h1 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold text-center mb-4">
-          DashBoard NourishEd {new Date().getFullYear()}
+          Dashboard NourishEd {new Date().getFullYear()}
         </h1>
         
       </div>
