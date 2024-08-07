@@ -101,7 +101,7 @@ const Expenses: React.FC = () => {
           size: 16,
         },
         color: '#333',
-        text: 'Monthly Salary vs Other Expenses',
+        text: 'Monthly Salary and Other Expenses',
       },
     },
     scales: {
