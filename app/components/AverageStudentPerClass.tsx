@@ -90,7 +90,7 @@ const AverageStudentPerClass: React.FC = () => {
           size: 16,
         },
         color: '#333',
-        text: 'Average Students Present Per Department in the last 7 Days',
+        text: 'Average Students Present Per Class in the last 7 Days',
       },
     },
     scales: {
