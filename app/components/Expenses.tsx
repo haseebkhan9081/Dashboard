@@ -9,9 +9,10 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
 
 const fetchAllFiles = async (
   quotationSheet: string,
-  expensesWorkSheet: string
+  expensesWorkSheet: string,
+  WorkSheet: string
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/expenses?quotationSheet=${quotationSheet}&expensesWorkSheet=${expensesWorkSheet}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/expenses?quotationSheet=${quotationSheet}&expensesWorkSheet=${expensesWorkSheet}&month=${WorkSheet}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -22,18 +23,18 @@ const Expenses: React.FC = () => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
+  const WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null   && expensesWorkSheet != null;
+  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, expensesWorkSheet],
+    queryKey: ['worksheets', quotationSheet, expensesWorkSheet, WorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, expensesWorkSheet!);
+        return fetchAllFiles(quotationSheet!, expensesWorkSheet!, WorkSheet!);
       } else {
-        return Promise.resolve([]);
+        return Promise.resolve({});
       }
     },
     enabled: !!allParamsAvailable,
@@ -44,15 +45,29 @@ const Expenses: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
+  // Prepare chart data
+  const months = Object.keys(data);
+  const salarySums = months.map(month => data[month].salarySum);
+  const otherExpensesSums = months.map(month => data[month].otherExpensesSum);
+
   const chartData: ChartData<'bar'> = {
-    labels: ['Salary', 'Other Expenses'],
+    labels: months,
     datasets: [
       {
-        label: 'Amount',
-        data: [data.salarySum, data.otherExpensesSum],
-        backgroundColor: ['#A2BD9D', '#9B9B9B'], // Use primary color and a neutral color for contrast
-        borderColor: ['#A2BD9D', '#9B9B9B'],
+        label: 'Salary',
+        data: salarySums,
+        backgroundColor: '#A2BD9D',
+        borderColor: '#A2BD9D',
         borderWidth: 1,
+        stack: 'stack1',
+      },
+      {
+        label: 'Other Expenses',
+        data: otherExpensesSums,
+        backgroundColor: '#9B9B9B',
+        borderColor: '#9B9B9B',
+        borderWidth: 1,
+        stack: 'stack2',
       },
     ],
   };
@@ -81,17 +96,17 @@ const Expenses: React.FC = () => {
       },
       title: {
         display: true,
-        
         font: {
           weight: 'bold',
           size: 16,
         },
         color: '#333',
-        text: 'Salary vs Other Expenses',
+        text: 'Monthly Salary vs Other Expenses',
       },
     },
     scales: {
       x: {
+        stacked: true,
         ticks: {
           font: {
             weight: 'bold',
@@ -99,9 +114,9 @@ const Expenses: React.FC = () => {
           },
           color: '#333',
         },
-        beginAtZero: true,
       },
       y: {
+        stacked: true,
         ticks: {
           font: {
             weight: 'bold',
@@ -115,7 +130,7 @@ const Expenses: React.FC = () => {
   };
 
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full  ">
+    <div className="h-[400px] p-4 md:p-6 w-full">
       <Bar data={chartData} options={options} />
     </div>
   );
