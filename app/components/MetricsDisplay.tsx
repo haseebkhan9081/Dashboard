@@ -2,6 +2,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import Decimal from 'decimal.js';
+import Loading from './Loading';
+import ErrorDisplay from './Error';
 const fetchTotalMealsServed = async (quotationSheet: string) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/totalMealsServed?quotationSheet=${quotationSheet}`);
   if (!response.ok) {
@@ -41,10 +43,10 @@ const MetricsDisplay: React.FC = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });
 
-  if (mealsLoading || studentsLoading) return <div>Loading...</div>;
-  if (mealsError) return <div>Error fetching total meals served: {(mealsError as Error).message}</div>;
-  if (studentsError) return <div>Error fetching average students: {(studentsError as Error).message}</div>;
-console.log("date",mealsData);
+  if (mealsLoading || studentsLoading) return <Loading/>;
+  if (mealsError) return <ErrorDisplay message={(mealsError as Error).message}/>;
+  if (studentsError) return <ErrorDisplay message= {(studentsError as Error).message}/>;
+ 
   return (
     <div className="flex flex-col w-full md:w-3/4 lg:w-1/2 space-y-4 mb-6">
       <div className="bg-primary text-primary-foreground p-6 rounded-lg shadow-lg">

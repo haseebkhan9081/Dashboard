@@ -2,6 +2,8 @@ import * as React from "react";
 import { useQuery } from '@tanstack/react-query';
 import Select from 'react-select';
 import { useSearchParams } from "next/navigation";
+import Loading from "./Loading";
+import ErrorDisplay from "./Error";
 
 type File = {
   value: number;
@@ -59,8 +61,8 @@ const SelectAttendanceWorkSheet = () => {
     window.history.pushState({}, '', url.toString());
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
+  if (isLoading) return <Loading/>;
+  if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
   return (
     <div className="w-full justify-center items-center flex space-y-4 flex-col">

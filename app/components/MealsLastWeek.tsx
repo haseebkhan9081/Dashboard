@@ -2,6 +2,8 @@ import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { parse, format } from 'date-fns';
+import Loading from './Loading';
+import ErrorDisplay from './Error';
 
 const fetchAllFiles = async (
   quotationSheet: string,
@@ -35,8 +37,8 @@ const MealsLastWeek: React.FC = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
+  if (isLoading) return <Loading/>;
+  if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
   const formatDate = (dateString: string) => {
     const date = parse(dateString, 'MM/dd/yyyy', new Date());

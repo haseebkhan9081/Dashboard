@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { ChartData, ChartOptions } from 'chart.js';
+import Loading from './Loading';
+import ErrorDisplay from './Error';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
 
@@ -36,7 +38,7 @@ const StudentVSNoofBoxes: React.FC = () => {
 
   const allParamsAvailable = attendanceSheet && quotationSheet && WorkSheet && expensesWorkSheet;
 
-  const { data, error, isLoading } = useQuery<File[]>({
+  const { data, error, isLoading,isRefetching ,} = useQuery<File[]>({
     queryKey: ['worksheets', attendanceSheet, quotationSheet, WorkSheet,expensesWorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
@@ -50,8 +52,8 @@ const StudentVSNoofBoxes: React.FC = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
+  if (isLoading) return <Loading/>;
+  if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
   // Ensure data is always an array
   const cleanedData = (data ?? [])

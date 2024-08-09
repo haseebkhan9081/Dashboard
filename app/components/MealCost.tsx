@@ -5,6 +5,8 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartData, ChartOptions } from 'chart.js';
+import Loading from './Loading';
+import ErrorDisplay from './Error';
 
 ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale, ChartDataLabels);
 
@@ -39,8 +41,8 @@ const MealCost: React.FC = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
+  if (isLoading) return <Loading/>;
+  if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
   // Convert the data into a format suitable for the bar chart
   const exchangeRate = 280; // PKR to USD exchange rate
@@ -97,7 +99,6 @@ const MealCost: React.FC = () => {
           },
           color: '#333',
           autoSkip: true, // Automatically skip labels if there are too many
-           
         },
         grid: {
           display: false, // Hide x-axis grid lines if not needed
@@ -166,7 +167,13 @@ const MealCost: React.FC = () => {
         },
         anchor: 'center',
         align: 'center',
-        formatter: (value) => value.toLocaleString(),
+        formatter: function (value, context) {
+          if (context.dataset.label === 'Total Cost (USD)') {
+            return `$${value.toFixed(2)}`;
+          } else {
+            return value.toLocaleString();
+          }
+        },
         clamp: true,
         padding: {
           top: 4,
@@ -176,6 +183,7 @@ const MealCost: React.FC = () => {
       }
     },
   };
+  
   
 
   return (

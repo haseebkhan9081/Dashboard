@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { ChartData, ChartOptions } from 'chart.js';
+import Loading from './Loading';
+import ErrorDisplay from './Error';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -42,8 +44,8 @@ const Expenses: React.FC = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
+  if (isLoading) return <Loading/>;
+  if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
   // Prepare chart data
   const months = Object.keys(data);
