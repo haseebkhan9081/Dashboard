@@ -5,6 +5,7 @@ import MealCost from './MealCost';
 import AverageStudentVsBoxes from './AverageStudentVsBoxes';
 import AverageStudentPerClass from './AverageStudentPerClass';
 import MealsLastWeek from './MealsLastWeek';
+import QuotationPerMeal from './QuotationPerMeal';
 
 const Analytics: React.FC = () => {
   return (
@@ -37,6 +38,12 @@ const Analytics: React.FC = () => {
         <div className="w-full">
           <MealsLastWeek />
         </div>
+      </div>
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+        <div className="w-full">
+          <QuotationPerMeal />
+        </div>
+        
       </div>
     </div>
   );

@@ -23,14 +23,14 @@ const DashBoard: React.FC = () => {
   const  WorkSheet = params.get("WorkSheet");
   const expensesWorkSheet = params.get("ExpensesWorkSheet");
 
-  // Determine if all required parameters are available
+ 
   const isParamsAvailable = 
     attendanceSheet !== null &&
     quotationSheet !== null &&
     WorkSheet !== null &&
     expensesWorkSheet !== null;
    
-  // Example data - replace these with actual fetched data
+  
  
 
 
