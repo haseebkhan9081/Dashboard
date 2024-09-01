@@ -46,7 +46,7 @@ const MealCost: React.FC = () => {
 
   // Convert the data into a format suitable for the bar chart
   const exchangeRate = 280; // PKR to USD exchange rate
-  const chartLabels = Object.keys(data).sort(); // Sort months alphabetically
+  const chartLabels = Object.keys(data); // Sort months alphabetically
   const pkrData = chartLabels.map(month => data[month]);
   const usdData = pkrData.map(cost => cost / exchangeRate);
 
