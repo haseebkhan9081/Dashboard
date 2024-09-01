@@ -12,6 +12,7 @@ type File = {
 
 // Pass the value parameter to the fetch function
 const fetchAllFiles = async (sheetId: string): Promise<File[]> => {
+
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/sheet/worksheets?sheetId=${sheetId}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
