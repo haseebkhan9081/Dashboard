@@ -58,15 +58,19 @@ const AttendanceSummaryByDate = () => {
       {data && Object.keys(data).length > 0 ? (
         Object.entries(data).map(([className, students]) => (
           <div key={className} className="mb-8">
-            <h2 className="text-lg font-semibold mb-2">{className}</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full border border-primary border-collapse hidden sm:table">
+            <h2 className="text-xl pl-6 text-left font-bold mb-2">{className}</h2>
+            <div className="overflow-x-auto
+            
+            p-6
+            
+            ">
+              <table className="min-w-full border border-primary border-collapse 
+              ">
                 <thead>
                   <tr className="border-b border-primary">
                     <th className="p-2 border-r border-primary text-left">AC-No</th>
                     <th className="p-2 border-r border-primary text-left">Name</th>
                     <th className="p-2 border-r border-primary text-left">Date</th>
-                    <th className="p-2 border-r border-primary text-left">Time</th>
                     <th className="p-2 text-left">Status</th>
                   </tr>
                 </thead>
@@ -76,24 +80,13 @@ const AttendanceSummaryByDate = () => {
                       <td className="p-2 border-r border-primary">{student['AC-No']}</td>
                       <td className="p-2 border-r border-primary">{student['Name']}</td>
                       <td className="p-2 border-r border-primary">{student['Date']}</td>
-                      <td className="p-2 border-r border-primary">{student['Time']}</td>
                       <td className="p-2 text-red-600">{student['status']}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {/* Mobile View */}
-              <div className="block sm:hidden">
-                {students && students.map((student: Student) => (
-                  <div key={student['AC-No']} className="mb-4 border border-primary rounded-lg p-4">
-                    <p className="font-semibold">AC-No: <span className="font-normal">{student['AC-No']}</span></p>
-                    <p className="font-semibold">Name: <span className="font-normal">{student['Name']}</span></p>
-                    <p className="font-semibold">Date: <span className="font-normal">{student['Date']}</span></p>
-                    <p className="font-semibold">Time: <span className="font-normal">{student['Time']}</span></p>
-                    <p className="font-semibold">Status: <span className={`font-normal ${student['status'] === 'Absent' ? 'text-red-600' : 'text-green-600'}`}>{student['status']}</span></p>
-                  </div>
-                ))}
-              </div>
+           
+               
             </div>
           </div>
         ))
