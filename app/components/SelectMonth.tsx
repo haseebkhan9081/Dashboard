@@ -67,7 +67,8 @@ const SelectMonth = () => {
 
   return (
     <div className="w-full justify-center items-center flex space-y-4 flex-col">
-      <h3 className="text-slate-500"> </h3>
+            <h3 className="text-slate-500">Month:</h3>
+
       <Select
         value={selectedValue}
         onChange={handleSelectChange}

@@ -33,9 +33,9 @@ const SelectFiles: React.FC = () => {
       {/* Render the component based on visibility state */}
       {isVisible && (
         <div className="w-full max-w-3xl flex flex-col h-full justify-center items-center space-y-6">
-          <h2 className="text-2xl font-semibold text-primary">Please Select the Relevant Month</h2>
+          <h2 className="text-2xl font-semibold text-primary">Please Select the Relevant Institution & Month</h2>
           <div className="w-full flex flex-col space-y-4">
-            
+            <SelecttAttendanceSheet/>
             {AttendanceSheet && AttendanceSheet.length > 0 && <SelectMonth />}
           </div>
         </div>

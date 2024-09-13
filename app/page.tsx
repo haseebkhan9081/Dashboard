@@ -15,10 +15,8 @@ export default function App() {
     const searchParams = url.searchParams;
 
     // Set the parameters
-    searchParams.set('AttendanceSheet', process.env.NEXT_PUBLIC_ATTENDANCE_SHEET || '');
-    searchParams.set('QuotationSheet', process.env.NEXT_PUBLIC_QUOTATION_SHEET || '');
-    searchParams.set('ExpensesWorkSheet', process.env.NEXT_PUBLIC_EXPENSES_WORK_SHEET || '');
-
+      searchParams.set('ExpensesWorkSheet', process.env.NEXT_PUBLIC_EXPENSES_WORK_SHEET || '');
+    
     // Update the URL without reloading the page
     window.history.replaceState(null, '', url.toString());
 

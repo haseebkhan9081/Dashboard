@@ -21,7 +21,7 @@ const SelectAttendanceSheet = () => {
     queryKey: ['files'],
     queryFn: fetchAllFiles,
   });
-
+  
   const [selectedValue, setSelectedValue] = React.useState<File | null>(null);
 
   React.useEffect(() => {
@@ -32,7 +32,14 @@ const SelectAttendanceSheet = () => {
 
     if (sheetValue && data) {
       const foundValue = data.find(file => file.value === sheetValue);
-      setSelectedValue(foundValue || null);
+      setSelectedValue(
+        foundValue
+          ? {
+              ...foundValue,
+              label: foundValue.label.split('Attendance Sheet')[0]
+            }
+          : null
+      );
     }
   }, [data]);
 
@@ -41,7 +48,18 @@ const SelectAttendanceSheet = () => {
     // Update the URL with the selected value
     const url = new URL(window.location.href);
     if (selectedOption) {
+console.log("selectedOption ",selectedOption);
       url.searchParams.set('AttendanceSheet', selectedOption.value);
+       const institutionName=selectedOption.label.split('Attendance Sheet')[0];
+       console.log("institutionName ",institutionName)
+       const filteredData=data?.filter(item=>item.label.includes(institutionName));
+       console.log("filteredData" ,filteredData)
+       const QuotationSheet=filteredData?.filter(item=>item.label.includes('Quotation'));
+      console.log("QuotationSheet",QuotationSheet)
+       console.log(QuotationSheet?.[0].value);
+       if (QuotationSheet && QuotationSheet.length > 0) {
+        url.searchParams.set('QuotationSheet', QuotationSheet[0].value);
+      }
     } else {
       url.searchParams.delete('AttendanceSheet');
     }
@@ -53,11 +71,14 @@ const SelectAttendanceSheet = () => {
 
   return (
     <div className="w-full justify-center items-center flex space-y-4 flex-col">
-      <h3 className="text-slate-500">Attendance Sheet:</h3>
+      <h3 className="text-slate-500">Institution:</h3>
       <Select
         value={selectedValue}
         onChange={handleSelectChange}
-        options={data || []}
+        options={data?.filter(item=>item.label.includes('Attendance Sheet')).map(item=>({
+          ...item,
+          label:item.label.split('Attendance Sheet')[0]
+        })) || []}
         placeholder="Select Attendance Sheet ..."
         className="w-[280px]"
       />
