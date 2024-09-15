@@ -16,7 +16,7 @@ const fetchAllFiles = async (): Promise<File[]> => {
   return response.json();
 };
 
-const SelectAttendanceSheet = () => {
+const SelectInstitute = () => {
   const { data, error, isLoading } = useQuery<File[]>({
     queryKey: ['files'],
     queryFn: fetchAllFiles,
@@ -48,7 +48,7 @@ console.log("data array ",data);
     // Update the URL with the selected value
     const url = new URL(window.location.href);
     if (selectedOption) {
-console.log("selectedOption ",selectedOption);
+      console.log("selectedOption ",selectedOption);
       url.searchParams.set('AttendanceSheet', selectedOption.value);
        const institutionName=selectedOption.label.split('Attendance Sheet')[0];
        console.log("institutionName ",institutionName)
@@ -74,17 +74,32 @@ console.log("selectedOption ",selectedOption);
     <div className="w-full justify-center items-center flex space-y-4 flex-col">
       <h3 className="text-slate-500">Institution:</h3>
       <Select
+       
         value={selectedValue}
         onChange={handleSelectChange}
         options={data?.filter(item=>item.label.includes('Attendance Sheet')).map(item=>({
           ...item,
           label:item.label.split('Attendance Sheet')[0]
         })) || []}
-        placeholder="Select Attendance Sheet ..."
-        className="w-[280px]"
+        placeholder="Select Institution ..."
+        className="w-[280px]
+        rounded-xl
+        border-primary
+        "
+        styles={{
+          control: (baseStyles, state) => ({
+            ...baseStyles,
+          
+            borderColor:'#a2bd9d',
+            borderRadius: '12px' // Adjust this value to make the corners more or less rounded
+          }),
+           
+           
+        }}
+      
       />
     </div>
   );
 };
 
-export default SelectAttendanceSheet;
+export default SelectInstitute;

@@ -24,7 +24,11 @@ interface Student {
 }
 
 interface AttendanceData {
-  [className: string]: Student[];
+  AbsentsData:{
+    [className: string]:Student[];
+  },
+  Present:Number;
+  Absent:Number;
 }
 
 const AttendanceSummaryByDate = () => {
@@ -53,18 +57,41 @@ const AttendanceSummaryByDate = () => {
 
   // Render tables for each class
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8
+    flex
+    justify-center
+    items-center
+    flex-col">
       <h1 className="text-xl font-bold text-center mb-4">Attendance Summary</h1>
-      {data && Object.keys(data).length > 0 ? (
-        Object.entries(data).map(([className, students]) => (
+     <div
+     className='bg-primary
+     
+     rounded-xl
+     mb-4
+     w-[350px]
+     text-black
+     font-bold
+     text-lg
+     p-4'>
+      {/* //@ts-ignore */}
+      <div> Present : {String(data?.Present)} </div>
+      <div> Absent  : {String(data?.Absent)} </div>
+     </div>
+      {data?.AbsentsData && Object.keys(data?.AbsentsData).length > 0 ? (
+        Object.entries(data?.AbsentsData).map(([className, students]) => (
           <div key={className} className="mb-8">
-            <h2 className="text-xl pl-6 text-left font-bold mb-2">{className}</h2>
-            <div className="overflow-x-auto
+            <h2 className="text-xl pl-6 text-left font-bold ">{className}</h2>
+            <div className="
             
             p-6
             
             ">
-              <table className="min-w-full border border-primary border-collapse 
+              <table className="
+              min-w-full 
+              border
+            border-primary
+              px-5
+                
               ">
                 <thead>
                   <tr className="border-b border-primary">
@@ -75,7 +102,7 @@ const AttendanceSummaryByDate = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {students && students.map((student: Student) => (
+                  {students && students?.map((student: Student) => (
                     <tr key={student['AC-No']} className="border-b border-primary">
                       <td className="p-2 border-r border-primary">{student['AC-No']}</td>
                       <td className="p-2 border-r border-primary">{student['Name']}</td>

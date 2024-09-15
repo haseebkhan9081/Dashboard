@@ -77,7 +77,7 @@ const MealsLastWeek: React.FC = () => {
             
           </tbody>
         </table>
-        {data.last7DaysMeals.length===0&&<NoDataFallback
+        {data?.last7DaysMeals.length===0&&<NoDataFallback
             message=' Display'/>}
       </div>
     </div>

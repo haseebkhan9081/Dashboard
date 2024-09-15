@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { DatePicker } from '../components/DatePicker';
 import AttendanceSummaryByDate from '../components/AttendanceSummaryByDate';
+import SelectInstitute from '../components/SelectInstitute';
 
 
 
@@ -33,7 +34,10 @@ useEffect(()=>{
     '>
          
          <div
-         className='z-50'>
+         className='z-50
+         space-y-4
+         '>
+    <SelectInstitute/>
      <DatePicker/>
      </div>
 <AttendanceSummaryByDate/>

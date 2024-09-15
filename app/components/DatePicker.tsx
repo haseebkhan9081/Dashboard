@@ -47,6 +47,7 @@ const handleDateChange=(date:Date)=>{
             `w-[280px] justify-start text-left font-normal  
             rounded-xl
             border-primary
+            bg-slate-50
             `,
             !date && "text-muted-foreground"
           )}
@@ -55,7 +56,9 @@ const handleDateChange=(date:Date)=>{
           {date ? format(date, "PPP") : <span className="">Pick a date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0
+      <PopoverContent
+      
+      className="w-auto p-0
       z-50
       ">
         <Calendar

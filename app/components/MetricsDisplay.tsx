@@ -51,7 +51,7 @@ const MetricsDisplay: React.FC = () => {
   return (
     <div className="flex flex-col w-full md:w-3/4 lg:w-1/2 space-y-4 mb-6">
      
-     {mealsData.totalMealsServed===0?(
+     {mealsData?.totalMealsServed===0?(
 <NoDataFallback
 message='Total Meals Served'
 />

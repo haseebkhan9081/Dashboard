@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import SelecttAttendanceSheet from './SelecttAttendanceSheet';
-import SelectQuotationSheet from './SelectQuotationSheet';
-import SelectAttendanceWorkSheet from './SelectAttendanceWorkSheet';
-import { useSearchParams } from 'next/navigation';
-import SelectQuotationWorkSheet from './SelectQuotationWorkSheet';
-import SelectExpensesWorkSheet from './SelectExpensesWorkSheet';
+import React, { useState } from 'react'; 
+import { useSearchParams } from 'next/navigation'; 
 import { Button } from '@/components/ui/button';
 import SelectMonth from './SelectMonth';
+ 
+import SelectInstitute from './SelectInstitute';
 
 // Define a TypeScript interface for the file data
 interface File {
@@ -35,7 +32,7 @@ const SelectFiles: React.FC = () => {
         <div className="w-full max-w-3xl flex flex-col h-full justify-center items-center space-y-6">
           <h2 className="text-2xl font-semibold text-primary">Please Select the Relevant Institution & Month</h2>
           <div className="w-full flex flex-col space-y-4">
-            <SelecttAttendanceSheet/>
+            <SelectInstitute/>
             {AttendanceSheet && AttendanceSheet.length > 0 && <SelectMonth />}
           </div>
         </div>
