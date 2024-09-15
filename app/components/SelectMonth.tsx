@@ -76,7 +76,21 @@ const SelectMonth = () => {
         getOptionLabel={(option) => option.label}
         getOptionValue={(option) => String(option.value)}
         placeholder="Select Sheet..."
-        className="w-[280px]"
+       
+        className="w-[280px]
+        rounded-xl
+        border-primary
+        "
+        styles={{
+          control: (baseStyles, state) => ({
+            ...baseStyles,
+          
+            borderColor:'#a2bd9d',
+            borderRadius: '12px' // Adjust this value to make the corners more or less rounded
+          }),
+           
+           
+        }}
       />
     </div>
   );
