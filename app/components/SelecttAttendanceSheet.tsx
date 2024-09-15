@@ -23,7 +23,7 @@ const SelectAttendanceSheet = () => {
   });
   
   const [selectedValue, setSelectedValue] = React.useState<File | null>(null);
-
+console.log("data array ",data);
   React.useEffect(() => {
     // Extract the value from the URL when the component mounts
     const url = new URL(window.location.href);
@@ -52,6 +52,7 @@ console.log("selectedOption ",selectedOption);
       url.searchParams.set('AttendanceSheet', selectedOption.value);
        const institutionName=selectedOption.label.split('Attendance Sheet')[0];
        console.log("institutionName ",institutionName)
+       console.log("the original data before filter ",data);
        const filteredData=data?.filter(item=>item.label.includes(institutionName));
        console.log("filteredData" ,filteredData)
        const QuotationSheet=filteredData?.filter(item=>item.label.includes('Quotation'));

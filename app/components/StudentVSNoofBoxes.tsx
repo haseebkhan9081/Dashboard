@@ -6,6 +6,7 @@ import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement
 import { ChartData, ChartOptions } from 'chart.js';
 import Loading from './Loading';
 import ErrorDisplay from './Error';
+import NoDataFallback from './NoDataFallback';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
 
@@ -161,11 +162,18 @@ const StudentVSNoofBoxes: React.FC = () => {
   };
   
   
-
+console.log(chartData.datasets[0].data)
   return (
     <div className="h-[400px] p-4 md:p-6 w-full  ">
-      <Line data={chartData} options={options} />
-    </div>
+     {chartData.datasets[0].data.length === 0 ? (
+       <NoDataFallback
+       message='Number of Boxes vs Number of Students Chart'
+       />
+
+
+) : (
+  <Line data={chartData} options={options} />
+)}</div>
   );
 };
 

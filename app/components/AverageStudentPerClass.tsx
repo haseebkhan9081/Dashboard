@@ -6,6 +6,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Toolti
 import { ChartData, ChartOptions } from 'chart.js';
 import Loading from './Loading';
 import ErrorDisplay from './Error';
+import NoDataFallback from './NoDataFallback';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -120,7 +121,16 @@ const AverageStudentPerClass: React.FC = () => {
 
   return (
     <div className="h-[400px] p-4 md:p-6 w-full">
-      <Bar data={chartData} options={options} />
+       {chartData.datasets[0].data.length === 0 ? (
+       <NoDataFallback
+       message='Average Students Present Per Class in the last 7 Days Chart'
+       />
+
+
+):(
+  <Bar data={chartData} options={options} />
+)}
+     
     </div>
   );
 };

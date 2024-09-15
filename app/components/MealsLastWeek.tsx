@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { parse, format } from 'date-fns';
 import Loading from './Loading';
 import ErrorDisplay from './Error';
+import NoDataFallback from './NoDataFallback';
 
 const fetchAllFiles = async (
   quotationSheet: string,
@@ -64,6 +65,7 @@ const MealsLastWeek: React.FC = () => {
             </tr>
           </thead>
           <tbody>
+            
             {data.last7DaysMeals.map((meal: { date: string, mealName: string, boxes: string }) => (
               <tr key={meal.date}>
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{formatDate(meal.date)}</td>
@@ -72,8 +74,11 @@ const MealsLastWeek: React.FC = () => {
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.boxes}</td>
               </tr>
             ))}
+            
           </tbody>
         </table>
+        {data.last7DaysMeals.length===0&&<NoDataFallback
+            message=' Display'/>}
       </div>
     </div>
   );

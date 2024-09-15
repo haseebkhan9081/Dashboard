@@ -6,6 +6,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Toolti
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Loading from './Loading';
 import ErrorDisplay from './Error';
+import NoDataFallback from './NoDataFallback';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, ChartDataLabels);
 
@@ -97,7 +98,7 @@ console.log("data :",data);
       },
       title: {
         display: true,
-        text: 'Average Student vs Boxes',
+        text: 'Average Student vs Average Boxes',
         font: {
           weight: 'bold',
           size: 16,
@@ -129,7 +130,15 @@ console.log("data :",data);
 
   return (
     <div className="h-[400px] p-4 md:p-6 w-full ">
-      <Bar data={chartData} options={chartOptions} />
+     {chartData.datasets[0].data.length === 0 ? (
+       <NoDataFallback
+       message='Average Student vs Average Boxes Chart'
+       />
+
+
+):(
+  <Bar data={chartData} options={chartOptions} />
+)}
     </div>
   );
 };
