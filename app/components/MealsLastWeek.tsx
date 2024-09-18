@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { parse, format } from 'date-fns';
 import Loading from './Loading';
@@ -17,7 +17,7 @@ const fetchAllFiles = async (
   return response.json();
 };
 
-const MealsLastWeek: React.FC = () => {
+const MealsLastWeek = ({onDataAvailability}:{onDataAvailability:(v:boolean)=>void}) => {
   const params = useSearchParams();
   const quotationSheet = params.get("QuotationSheet");
   const  WorkSheet = params.get("WorkSheet");
@@ -37,6 +37,12 @@ const MealsLastWeek: React.FC = () => {
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
+ 
+ 
+  useEffect(() => {
+ 
+    onDataAvailability(data?.last7DaysMeals?.length>0);
+  }, [data,onDataAvailability]);
 
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
@@ -52,7 +58,8 @@ const MealsLastWeek: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 w-full">
+    <>
+    {data?.last7DaysMeals?.length>0&&<div className="p-4 md:p-6 w-full">
       <h2 className="text-2xl font-bold mb-4 text-primary">Meals Served in the Last 7 Days</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse border border-primary">
@@ -80,7 +87,9 @@ const MealsLastWeek: React.FC = () => {
         {data?.last7DaysMeals.length===0&&<NoDataFallback
             message=' Display'/>}
       </div>
-    </div>
+    </div>}
+    
+    </>
   );
 };
 

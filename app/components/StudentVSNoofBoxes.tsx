@@ -164,16 +164,16 @@ const StudentVSNoofBoxes: React.FC = () => {
   
 console.log(chartData.datasets[0].data)
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full  ">
-     {chartData.datasets[0].data.length === 0 ? (
-       <NoDataFallback
-       message='Number of Boxes vs Number of Students Chart'
-       />
-
-
-) : (
+    <div>
+      {!(chartData.datasets[0].data.length==0)?<div className="h-[400px] p-4 md:p-6 w-full  ">
   <Line data={chartData} options={options} />
-)}</div>
+ </div>:<div
+ className='text-center
+ text-slate-400
+ '
+ >No Data</div>}
+    
+ </div>
   );
 };
 

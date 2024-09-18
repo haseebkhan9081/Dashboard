@@ -31,10 +31,9 @@ const QuotationPerMeal: React.FC = () => {
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
-
+console.log("data in QuotationPerMeal ",data)
   if (isLoading) return <Loading />;
-  if (error) return <ErrorDisplay message={(error as Error).message} />;
-
+  if (error) return  null;
   return (
     <div className="p-4 md:p-6 w-full">
       <h2 className="text-2xl font-bold mb-4 text-primary">Meal Quotations and Costs</h2>

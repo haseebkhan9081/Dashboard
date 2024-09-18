@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
@@ -21,7 +21,7 @@ const fetchAllFiles = async (
   return response.json();
 };
 
-const Expenses: React.FC = () => {
+const Expenses= ({onDataAvailability}:{onDataAvailability:(v:boolean)=>void}) => {
   const params = useSearchParams();
   const attendanceSheet = params.get("AttendanceSheet");
   const quotationSheet = params.get("QuotationSheet");
@@ -43,11 +43,21 @@ const Expenses: React.FC = () => {
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
+  useEffect(() => {
+    if(data){
+
+    
+    const months = Object.keys(data);
+  const salarySums = months.map(month => data[month].salarySum);
+  const otherExpensesSums = months.map(month => data[month].otherExpensesSum);
+console.log("the test ",salarySums[0])
+    onDataAvailability(!(salarySums[0]==undefined&&otherExpensesSums[0]==undefined));
+  }
+  }, [data, onDataAvailability]);
 
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
-
-  // Prepare chart data
+   // Prepare chart data
   const months = Object.keys(data);
   const salarySums = months.map(month => data[month].salarySum);
   const otherExpensesSums = months.map(month => data[month].otherExpensesSum);
@@ -130,10 +140,14 @@ const Expenses: React.FC = () => {
       },
     },
   };
+  
 
   return (
-    <div className="h-[400px] p-4 md:p-6 w-full">
+    <div>
+      {!(salarySums[0]==undefined&&otherExpensesSums[0]==undefined)&&<div className="h-[400px] p-4 md:p-6 w-full">
       <Bar data={chartData} options={options} />
+    </div>}
+    
     </div>
   );
 };
