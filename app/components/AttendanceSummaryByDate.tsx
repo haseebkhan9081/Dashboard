@@ -93,7 +93,7 @@ const AttendanceSummaryByDate = () => {
               <table className="
              min-w-full border-collapse border border-primary
                 
-              ">
+              ">  
                 <thead>
                   <tr className="bg-primary text-primary-foreground">
                     <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">AC-No</th>
