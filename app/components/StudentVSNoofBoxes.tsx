@@ -143,6 +143,18 @@ if(typeof(window)!=='undefined'){
         },
       },
       datalabels: {
+        color: 'black',
+font:{
+  
+  weight:'bold',
+
+
+},
+align:"center",
+rotation:-60,
+anchor:"start",
+ 
+
 
         display: isMobile?true:false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
       },
