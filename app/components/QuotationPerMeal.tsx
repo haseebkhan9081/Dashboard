@@ -47,7 +47,7 @@ console.log("data in QuotationPerMeal ",data)
             </tr>
           </thead>
           <tbody>
-            {data.map((meal: { mealPlan: string, quotations: string, costFor200Meals: string }, index: number) => (
+            {data?.map((meal: { mealPlan: string, quotations: string, costFor200Meals: string }, index: number) => (
               <tr key={index}>
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.mealPlan}</td>
                 <td className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">{meal.quotations}</td>
