@@ -58,7 +58,7 @@ console.log("data :",data);
     labels,
     datasets: [
       {
-        label: 'Average Boxes',
+        label: 'Average Meals',
         data: averageBoxes,
         backgroundColor: '#A2BD9D',
         borderColor: '#A2BD9D',
@@ -98,7 +98,7 @@ console.log("data :",data);
       },
       title: {
         display: true,
-        text: 'Average Student vs Average Boxes',
+        text: 'Average Student vs Average Meals',
         font: {
           weight: 'bold',
           size: 16,
@@ -132,7 +132,7 @@ console.log("data :",data);
     <div className="h-[400px] p-4 md:p-6 w-full ">
      {chartData.datasets[0].data.length === 0 ? (
        <NoDataFallback
-       message='Average Student vs Average Boxes Chart'
+       message='Average Student vs Average Meals Chart'
        />
 
 

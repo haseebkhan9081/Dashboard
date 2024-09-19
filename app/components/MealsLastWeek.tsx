@@ -68,7 +68,7 @@ const MealsLastWeek = ({onDataAvailability}:{onDataAvailability:(v:boolean)=>voi
               <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Day</th>
               <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Date</th>
               <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Meal Name</th>
-              <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Boxes</th>
+              <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Meals</th>
             </tr>
           </thead>
           <tbody>

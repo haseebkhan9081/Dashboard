@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from 'chart.js';
@@ -53,6 +53,21 @@ const StudentVSNoofBoxes: React.FC = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
 
+const [isMobile,setIsMobile]=useState(false);
+
+useEffect(()=>{
+if(typeof(window)!=='undefined'){
+  const handleResize=()=>{
+    setIsMobile(window.innerWidth<768)
+  }
+  window.addEventListener('resize',handleResize);
+  handleResize();
+  return ()=>window.removeEventListener('resize',handleResize);
+}
+},[]);
+
+
+
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
@@ -74,7 +89,7 @@ const StudentVSNoofBoxes: React.FC = () => {
     labels: cleanedData.map(entry => entry.Date),
     datasets: [
       {
-        label: 'Number of Boxes',
+        label: 'Number of Meals',
         data: cleanedData.map(entry => entry.NoOfBoxes),
         borderColor: '#A2BD9D', // Primary color
         backgroundColor: 'rgba(162, 189, 157, 0.2)', // Light version of primary color
@@ -117,7 +132,7 @@ const StudentVSNoofBoxes: React.FC = () => {
         },
         color: '#333',
         
-        text: 'Number of Boxes vs Number of Students',
+        text: 'Number of Meals vs Number of Students',
       },
       tooltip: {
         callbacks: {
@@ -129,7 +144,7 @@ const StudentVSNoofBoxes: React.FC = () => {
       },
       datalabels: {
 
-        display: false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
+        display: isMobile?true:false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
       },
     },
     scales: {
@@ -162,7 +177,7 @@ const StudentVSNoofBoxes: React.FC = () => {
   };
   
   
-console.log(chartData.datasets[0].data)
+ 
   return (
     <div>
       {!(chartData.datasets[0].data.length==0)?<div className="h-[400px] p-4 md:p-6 w-full  ">
@@ -171,7 +186,7 @@ console.log(chartData.datasets[0].data)
  className='text-center
  text-slate-400
  '
- >No Data</div>}
+ >No Data!</div>}
     
  </div>
   );

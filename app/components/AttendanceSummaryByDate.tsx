@@ -85,7 +85,7 @@ const AttendanceSummaryByDate = () => {
           <div key={className} className="p-4
           px-8
           md:p-6 w-full">
-            <h2 className="text-xl   text-left font-bold ">{className}</h2>
+            <h2 className="text-xl   text-left font-bold "></h2>
             <div className="
              
             overflow-x-auto
@@ -95,6 +95,17 @@ const AttendanceSummaryByDate = () => {
                 
               ">  
                 <thead>
+                  <tr
+                  className='border
+                  w-full
+                  text-center
+                  bg-primary text-primary-foreground
+                  border-primary '>
+                     
+                    <th
+                    className=''>{className}</th>
+                    
+                    </tr>
                   <tr className="bg-primary text-primary-foreground">
                     <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">AC-No</th>
                     <th className="border border-primary px-2 py-1 text-sm md:px-4 md:py-2">Name</th>
