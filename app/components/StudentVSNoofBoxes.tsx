@@ -88,7 +88,7 @@ if(typeof(window)!=='undefined'){
   const chartData: ChartData<'line'> = {
     labels: cleanedData.map(entry => entry.Date),
     datasets: [
-      {
+      { 
         label: 'Number of Meals',
         data: cleanedData.map(entry => entry.NoOfBoxes),
         borderColor: '#A2BD9D', // Primary color
@@ -124,6 +124,7 @@ if(typeof(window)!=='undefined'){
          
       },
       title: {
+        align:"center",
         display: true,
         
         font: {
@@ -150,15 +151,16 @@ font:{
 
 
 },
-align:"center",
+align:"bottom",
 rotation:-60,
-anchor:"start",
+anchor:"end",
  
 
 
         display: isMobile?true:false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
       },
     },
+    
     scales: {
       x: {
         ticks: {
