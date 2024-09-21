@@ -16,7 +16,7 @@ import { useSearchParams } from "next/navigation"
 
 export function DatePicker() {
     const params=useSearchParams();
-    
+    const [isOpen,setIsOpen]=React.useState(false);
   const [date, setDate] = React.useState<Date>()
  
 React.useEffect(()=>{
@@ -35,11 +35,15 @@ const handleDateChange=(date:Date)=>{
     newUrl.searchParams.set('date', formattedDate);
     // Update the URL without reloading the page
     window.history.replaceState({}, '', newUrl.toString());
+    setIsOpen(false);
 }
 
 
   return (
-    <Popover>
+    <Popover
+    open={isOpen}
+    onOpenChange={setIsOpen}
+    >
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}

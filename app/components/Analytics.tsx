@@ -42,7 +42,8 @@ const Analytics: React.FC = () => {
         <Expenses
         onDataAvailability={setisExpensesAvailable}
         />
-      </div>
+      </div> 
+      
         <div className="w-full">
           <MealsLastWeek
             onDataAvailability={setisMealsLastWeekAvailable}

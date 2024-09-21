@@ -77,8 +77,8 @@ const AttendanceSummaryByDate = () => {
      text-lg
      p-4'>
       {/* //@ts-ignore */}
-      <div> Present : {String(data?.Present)} </div>
-      <div> Absent  : {String(data?.Absent)} </div>
+      <div> Present : {String(data?.Present||"No Data")} </div>
+      <div> Absent  : {String(data?.Absent||"No Data")} </div>
      </div>
       {data?.AbsentsData && Object.keys(data?.AbsentsData).length > 0 ? (
         Object.entries(data?.AbsentsData).map(([className, students]) => (

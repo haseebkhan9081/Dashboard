@@ -50,7 +50,7 @@ const Expenses= ({onDataAvailability}:{onDataAvailability:(v:boolean)=>void}) =>
     const months = Object.keys(data);
   const salarySums = months.map(month => data[month].salarySum);
   const otherExpensesSums = months.map(month => data[month].otherExpensesSum);
-console.log("the test ",salarySums[0])
+  console.log("the test ",salarySums[0])
     onDataAvailability(!(salarySums[0]==undefined&&otherExpensesSums[0]==undefined));
   }
   }, [data, onDataAvailability]);
