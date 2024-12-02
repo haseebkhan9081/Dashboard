@@ -43,16 +43,18 @@ const TeachersAverageTime: React.FC = () => {
 console.log(data)
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
+  // Early return if data is empty or undefined
+  if (!Array.isArray(data) || data.length === 0) return null;
 
   //@ts-ignore
-  const chartLabels = data.map((entry) => entry.Name); // Names for the x-axis
+  const chartLabels = data?.map((entry) => entry.Name); // Names for the x-axis
   //@ts-ignore
   
-  const timeData = data.map((entry) => entry.timeValue); // Time values in minutes
+  const timeData = data?.map((entry) => entry.timeValue); // Time values in minutes
   //@ts-ignore
-  const timeLabels = data.map((entry) => entry.timeLabel); // Formatted time labels for display
+  const timeLabels = data?.map((entry) => entry.timeLabel); // Formatted time labels for display
  //@ts-ignore
-  const absentData = data.map((entry) => parseInt(entry.Absent?.split(" ")[0])); // Absence count
+  const absentData = data?.map((entry) => parseInt(entry.Absent?.split(" ")[0])); // Absence count
   const maxTime = Math.max(...timeData);
   const maxAbsent = Math.max(...absentData);
   
