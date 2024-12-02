@@ -7,6 +7,7 @@ import AverageStudentPerClass from './AverageStudentPerClass';
 import MealsLastWeek from './MealsLastWeek';
 import QuotationPerMeal from './QuotationPerMeal';
 import { cn } from '@/lib/utils';
+import TeachersAverageTime from './TeachersAverageTime';
 
 const Analytics: React.FC = () => {
   const [isExpensesAvailable,setisExpensesAvailable]=useState(true);
@@ -55,7 +56,9 @@ const Analytics: React.FC = () => {
         <div className="w-full">
           <QuotationPerMeal />
         </div>
-        
+         <div
+         className='w-full'
+         >  <TeachersAverageTime /></div>
       </div>
     </div>
   );
