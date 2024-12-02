@@ -171,7 +171,8 @@ console.log(data)
   return (
     <div className="overflow-x-auto">
       <div className="w-[1000px] h-[350px]">
-        <Bar data={chartData} options={options} />
+        {(data&&data?.length>0)&&<Bar data={chartData} options={options} />}
+        
       </div>
     </div>
   );
