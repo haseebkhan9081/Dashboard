@@ -30,7 +30,7 @@ const TeachersAttendanceSummary: React.FC = () => {
   const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && WorkSheet != null && expensesWorkSheet != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['TeachersAverageTime', attendanceSheet, WorkSheet],
+    queryKey: ["TeachersAttendanceSummary", attendanceSheet, WorkSheet],
     queryFn: () => {
       if (allParamsAvailable) {
         return fetchAllFiles(attendanceSheet!, WorkSheet!);
@@ -42,7 +42,7 @@ const TeachersAttendanceSummary: React.FC = () => {
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
-console.log("TeachersAttendanceSummary: ",data)
+
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
   // Early return if data is empty or undefined
@@ -51,7 +51,7 @@ console.log("TeachersAttendanceSummary: ",data)
  
   
   
-  
+  console.log("TeachersAttendanceSummary in this commponenet: ", data);
   
   return (
     <>
