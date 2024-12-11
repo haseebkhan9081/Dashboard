@@ -40,7 +40,6 @@ const TeachersAverageTime: React.FC = () => {
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
-console.log(data)
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
   // Early return if data is empty or undefined
@@ -64,7 +63,7 @@ console.log(data)
     labels: chartLabels,
     datasets: [
       {
-        label: 'Average Time Worked (Minutes)',
+        label: 'Weekly Average Time Worked (Minutes)',
         data: timeData,
         backgroundColor: '#A2BD9D',
         borderColor: '#A2BD9D',
@@ -130,7 +129,7 @@ console.log(data)
       },
       title: {
         display: true,
-        text: 'Teachers Attendance and Work Time',
+        text: 'Weekly Teachers Attendance and Work Time',
         font: {
           weight: 'bold',
           size: 16,
@@ -160,7 +159,7 @@ console.log(data)
         anchor: 'center',
         align: 'top',
         formatter: (value, context) => {
-          if (context.dataset.label === 'Average Time Worked (Minutes)') {
+          if (context.dataset.label === 'Weekly Average Time Worked (Minutes)') {
             return timeLabels[context.dataIndex];
           } else {
             return `${value}`;

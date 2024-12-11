@@ -8,6 +8,7 @@ import MealsLastWeek from './MealsLastWeek';
 import QuotationPerMeal from './QuotationPerMeal';
 import { cn } from '@/lib/utils';
 import TeachersAverageTime from './TeachersAverageTime';
+import TeachersAttendanceSummary from './TeachersAttendanceSummary';
 
 const Analytics: React.FC = () => {
   const [isExpensesAvailable,setisExpensesAvailable]=useState(true);
@@ -17,15 +18,15 @@ const Analytics: React.FC = () => {
       <h2 className="text-3xl font-bold text-center text-primary mb-4 col-span-full">
         Comprehensive Analytics Dashboard
       </h2>
-      
+
       <div className="col-span-full lg:col-span-2 xl:col-span-4 w-full">
         <StudentVSNoofBoxes />
       </div>
-      
+
       <div className="col-span-full lg:col-span-2 xl:col-span-4 w-full">
         <MealCost />
       </div>
-      
+
       <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <div className="w-full">
           <AverageStudentVsBoxes />
@@ -34,31 +35,37 @@ const Analytics: React.FC = () => {
           <AverageStudentPerClass />
         </div>
       </div>
-      
-      <div className={cn(`col-span-full grid grid-cols-1 gap-6 `,
-        (isExpensesAvailable&&isMealsLastWeekAvailable)?'md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2':'md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1'
-      )}>
-        
+
+      <div
+        className={cn(
+          `col-span-full grid grid-cols-1 gap-6 `,
+          isExpensesAvailable && isMealsLastWeekAvailable
+            ? "md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2"
+            : "md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1"
+        )}
+      >
         <div className="w-full">
-        <Expenses
-        onDataAvailability={setisExpensesAvailable}
-        />
-      </div> 
-      
-        <div className="w-full">
-          <MealsLastWeek
-            onDataAvailability={setisMealsLastWeekAvailable}
-            />
+          <Expenses onDataAvailability={setisExpensesAvailable} />
         </div>
-        
+
+        <div className="w-full">
+          <MealsLastWeek onDataAvailability={setisMealsLastWeekAvailable} />
+        </div>
       </div>
       <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <div className="w-full">
           <QuotationPerMeal />
         </div>
-         <div
-         className='w-full'
-         >  <TeachersAverageTime /></div>
+        <div className="w-full">
+          {" "}
+          <TeachersAverageTime />
+        </div>
+      </div>
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+        <div className="w-full">
+          <TeachersAttendanceSummary />
+        </div>
+        
       </div>
     </div>
   );
