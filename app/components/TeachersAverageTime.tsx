@@ -143,7 +143,7 @@ const TeachersAverageTime: React.FC = () => {
   
             if (datasetIndex === 0) {
               // Use `timeLabels` for the first dataset (time worked)
-              return `Time Worked: ${timeLabels[dataIndex]} | Days Absent: ${absentData[dataIndex]}`;
+              return `Time Worked: ${timeLabels[dataIndex]} `;
             }
             return "";
           },
