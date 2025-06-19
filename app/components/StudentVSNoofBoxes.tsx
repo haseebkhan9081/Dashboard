@@ -175,7 +175,7 @@ anchor:"end",
         },
       },
       y: {
-        min:130,
+        min:120,
         ticks: {
           font: {
             weight: 'bold',
