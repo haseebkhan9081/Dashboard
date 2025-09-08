@@ -4,8 +4,7 @@ import SelectFiles from './SelectFiles';
 import Analytics from './Analytics';
 
 import MetricsDisplay from './MetricsDisplay';
-import LoadingState from './LoadingState';
-import Image from 'next/image';
+
 
 
 
