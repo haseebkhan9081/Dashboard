@@ -9,53 +9,71 @@ import Loading from './Loading';
 import ErrorDisplay from './Error';
 
 ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale, ChartDataLabels);
+export interface TeacherAttendanceRecord {
+  acNo: string;
+  Name: string;
+  Present: string; // e.g., "24 days"
+  Absent: string; // e.g., "2 days"
+}
 
-const fetchAllFiles = async (attendanceSheet: string, WorkSheet: string) => {
+export interface TeachersAttendanceSummaryResponse {
+  month: string; // e.g., "2025-08"
+  data: TeacherAttendanceRecord[];
+}
+
+const getTeachersAttendanceSummary = async (
+  programId: string,
+  month: string
+):Promise<TeachersAttendanceSummaryResponse> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/TeachersAttendanceSummary?attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${WorkSheet}`
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/attendance/TeachersAttendanceSummary?schoolId=${programId}&month=${month}`
   );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const TeachersAttendanceSummary: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
+  const programId = params.get("programId");
+  const month = params.get("month");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && WorkSheet != null && expensesWorkSheet != null;
+  const allParamsAvailable =
+    programId != null &&
+    month != null;
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["TeachersAttendanceSummary", attendanceSheet, WorkSheet],
-    queryFn: () => {
-      if (allParamsAvailable) {
-        return fetchAllFiles(attendanceSheet!, WorkSheet!);
-      } else {
-        return Promise.resolve({});
-      }
-    },
-    enabled: !!allParamsAvailable,
-    retry: 3, // Number of retry attempts
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
-  });
-
+  const { data, error, isLoading } =
+    useQuery<TeachersAttendanceSummaryResponse>({
+      queryKey: ["getTeachersAttendanceSummary", programId, month],
+      queryFn: () => {
+        if (allParamsAvailable) {
+          return getTeachersAttendanceSummary(programId!, month!);
+        } else {
+          return Promise.resolve({ month: "", data: [] });
+        }
+      },
+      enabled: !!allParamsAvailable,
+      retry: 3, // Number of retry attempts
+      retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
+    });
+  console.log("TeachersAttendanceSummary in this commponenet: ", data?.data);
+if (!data || data?.data.length === 0) {
+  return null;
+}
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
   // Early return if data is empty or undefined
-  if (!Array.isArray(data) || data.length === 0) return null;
+
 
  
   
   
-  console.log("TeachersAttendanceSummary in this commponenet: ", data);
+  
   
   return (
     <>
-      {data && data?.length > 0 && (
+      {data?.data && data?.data?.length > 0 && (
         <div className="p-4 md:p-6 w-full">
           <h2 className="text-2xl font-bold mb-4 text-primary">
             Staff Attendance Summary
@@ -76,7 +94,7 @@ const TeachersAttendanceSummary: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.map(
+                {data?.data?.map(
                   (
                     Attendance: {
                       acNo: string;

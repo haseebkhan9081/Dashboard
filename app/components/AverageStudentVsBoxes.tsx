@@ -10,32 +10,30 @@ import NoDataFallback from './NoDataFallback';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, ChartDataLabels);
 
-const fetchAllFiles = async (
-  quotationSheet: string,
-  attendanceSheet: string,
-  WorkSheet: string
-) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/AverageStudentVsBoxes?quotationSheet=${quotationSheet}&attendanceSheet=${attendanceSheet}`);
+const AverageStudentVSBoxes = async (programId: string, month: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/meals/AverageStudentVsBoxes?schoolId=${programId}&month=${month}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const AverageStudentVsBoxes: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
+  const programId = params.get("programId");
+  const month = params.get("month");
+ 
 
-  const allParamsAvailable = attendanceSheet && quotationSheet && WorkSheet && expensesWorkSheet;
+  const allParamsAvailable =
+    programId && month  ;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, attendanceSheet, WorkSheet],
+    queryKey: ["AverageStudentVSBoxes", programId, month],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, attendanceSheet!, WorkSheet!);
+        return AverageStudentVSBoxes(programId!, month!);
       } else {
         return Promise.resolve({}); // Handle missing params gracefully
       }
@@ -49,11 +47,17 @@ const AverageStudentVsBoxes: React.FC = () => {
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
   const roundUp = (value: number) => Math.ceil(value);
-
+ 
   const labels = Object.keys(data || {});
-  const averageBoxes = labels.map(label => roundUp(data[label]?.averageBoxes || 0));
-  const averageStudentsPresent = labels.map(label => roundUp(data[label]?.averageStudentsPresent || 0));
-console.log("data :",data);
+  console.log("labels ",labels);
+  const averageBoxes = labels.map((label) =>
+    roundUp(Number(data[label]?.averageBoxes) || 0)
+  );
+  const averageStudentsPresent = labels.map((label) =>
+    roundUp(Number(data[label]?.averageStudentsPresent) || 0)
+  );
+
+console.log("averageBoxes",averageBoxes);
   const chartData: ChartData<'bar', number[], string> = {
     labels,
     datasets: [

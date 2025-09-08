@@ -10,32 +10,30 @@ import NoDataFallback from './NoDataFallback';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const fetchAllFiles = async (
-  attendanceSheet: string,
-  WorkSheet: string
-) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/studentAveragePerClass?attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${WorkSheet}`);
+const averageStudentPerClass = async (programId: string, month: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/attendance/StudentAveragePerClass?schoolId=${programId}&month=${month}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const AverageStudentPerClass: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
+  const programId = params.get("programId");
+  const month = params.get("month");
 
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
-
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && expensesWorkSheet != null;
+  const allParamsAvailable =
+    programId != null &&
+    month != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', attendanceSheet, WorkSheet],
+    queryKey: ["averageStudentPerClass", programId, month],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(attendanceSheet!, WorkSheet!);
+        return averageStudentPerClass(programId!, month!);
       } else {
         return Promise.resolve([]);
       }
@@ -48,15 +46,21 @@ const AverageStudentPerClass: React.FC = () => {
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
 
-  const chartData: ChartData<'bar'> = {
-    labels: data.map((d: { department: string }) => d.department),
+console.log("Data = > ",data)
+if (!data || data.length === 0) {
+  return null;
+}
+  const chartData: ChartData<"bar"> = {
+    labels: data?.map((d: { department: string }) => d.department),
     datasets: [
       {
-        label: 'Average Students Present',
+        label: "Average Students Present",
         // Round up the average values
-        data: data.map((d: { average: string }) => Math.ceil(parseFloat(d.average))),
-        backgroundColor: '#A2BD9D', // Primary color
-        borderColor: '#A2BD9D', // Primary color
+        data: data.map((d: { average: string }) =>
+          Math.ceil(parseFloat(d.average))
+        ),
+        backgroundColor: "#A2BD9D", // Primary color
+        borderColor: "#A2BD9D", // Primary color
         borderWidth: 1,
       },
     ],

@@ -1,70 +1,67 @@
 import * as React from "react";
-import { useQuery } from '@tanstack/react-query';
-import Select from 'react-select';
+import { useQuery } from "@tanstack/react-query";
+import Select from "react-select";
 
-type File = {
+type Program = {
   value: string;
   label: string;
+  raw: any; // keep original object in case you need full details
 };
 
-const fetchAllFiles = async (): Promise<File[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/sheets`); // Replace with your API endpoint
+const fetchPrograms = async (): Promise<Program[]> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/schools`
+  );
 
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
-  return response.json();
+
+  const result = await response.json();
+
+  // Transform the API response into react-select options
+  return result.programs.map((p: any) => ({
+    value: String(p.href), // use href (id) as value
+    label: p.title, // display program title
+    raw: p, // keep full program data
+  }));
 };
 
 const SelectInstitute = () => {
-  const { data, error, isLoading } = useQuery<File[]>({
-    queryKey: ['files'],
-    queryFn: fetchAllFiles,
+  const { data, error, isLoading } = useQuery<Program[]>({
+    queryKey: ["programs"],
+    queryFn: fetchPrograms,
   });
-  
-  const [selectedValue, setSelectedValue] = React.useState<File | null>(null);
-console.log("data array ",data);
-  React.useEffect(() => {
-    // Extract the value from the URL when the component mounts
-    const url = new URL(window.location.href);
-    const sheetValue = url.searchParams.get('AttendanceSheet');
-    console.log("value found in url", sheetValue);
 
-    if (sheetValue && data) {
-      const foundValue = data.find(file => file.value === sheetValue);
-      setSelectedValue(
-        foundValue
-          ? {
-              ...foundValue,
-              label: foundValue.label.split('Attendance Sheet')[0]
-            }
-          : null
-      );
+  const [selectedValue, setSelectedValue] = React.useState<Program | null>(
+    null
+  );
+
+  // Pre-fill based on URL param
+  React.useEffect(() => {
+    const url = new URL(window.location.href);
+    const programId = url.searchParams.get("programId");
+
+    if (programId && data) {
+      const found = data.find((p) => p.value === programId);
+      if (found) {
+        setSelectedValue(found);
+      }
     }
   }, [data]);
 
-  const handleSelectChange = (selectedOption: File | null) => {
+  const handleSelectChange = (selectedOption: Program | null) => {
     setSelectedValue(selectedOption);
-    // Update the URL with the selected value
+
     const url = new URL(window.location.href);
+
     if (selectedOption) {
-      console.log("selectedOption ",selectedOption);
-      url.searchParams.set('AttendanceSheet', selectedOption.value);
-       const institutionName=selectedOption.label.split('Attendance Sheet')[0];
-       console.log("institutionName ",institutionName)
-       console.log("the original data before filter ",data);
-       const filteredData=data?.filter(item=>item.label.includes(institutionName));
-       console.log("filteredData" ,filteredData)
-       const QuotationSheet=filteredData?.filter(item=>item.label.includes('Quotation'));
-      console.log("QuotationSheet",QuotationSheet)
-       console.log(QuotationSheet?.[0].value);
-       if (QuotationSheet && QuotationSheet.length > 0) {
-        url.searchParams.set('QuotationSheet', QuotationSheet[0].value);
-      }
+      url.searchParams.set("programId", selectedOption.value);
     } else {
-      url.searchParams.delete('AttendanceSheet');
+      url.searchParams.delete("programId");
     }
-    window.history.pushState({}, '', url.toString());
+
+    window.history.pushState({}, "", url.toString());
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -72,31 +69,20 @@ console.log("data array ",data);
 
   return (
     <div className="w-full justify-center items-center flex space-y-4 flex-col">
-      <h3 className="text-slate-500">Institution:</h3>
+      <h3 className="text-slate-500">Program:</h3>
       <Select
-       
         value={selectedValue}
         onChange={handleSelectChange}
-        options={data?.filter(item=>item.label.includes('Attendance Sheet')).map(item=>({
-          ...item,
-          label:item.label.split('Attendance Sheet')[0]
-        })) || []}
+        options={data || []}
         placeholder="Select Institution ..."
-        className="w-[280px]
-        rounded-xl
-        border-primary
-        "
+        className="w-[280px] rounded-xl border-primary"
         styles={{
-          control: (baseStyles, state) => ({
+          control: (baseStyles) => ({
             ...baseStyles,
-          
-            borderColor:'#a2bd9d',
-            borderRadius: '12px' // Adjust this value to make the corners more or less rounded
+            borderColor: "#a2bd9d",
+            borderRadius: "12px",
           }),
-           
-           
         }}
-      
       />
     </div>
   );

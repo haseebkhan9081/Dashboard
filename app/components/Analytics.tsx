@@ -27,44 +27,25 @@ const Analytics: React.FC = () => {
         <MealCost />
       </div>
 
-      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <div className="w-full">
-          <AverageStudentVsBoxes />
-        </div>
-        <div className="w-full">
-          <AverageStudentPerClass />
-        </div>
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
+        <AverageStudentVsBoxes />
+
+        <AverageStudentPerClass />
       </div>
 
-      <div
-        className={cn(
-          `col-span-full grid grid-cols-1 gap-6 `,
-          isExpensesAvailable && isMealsLastWeekAvailable
-            ? "md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2"
-            : "md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1"
-        )}
-      >
-        <div className="w-full">
-          <Expenses onDataAvailability={setisExpensesAvailable} />
-        </div>
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
+        <Expenses />
 
-        <div className="w-full">
-          <MealsLastWeek onDataAvailability={setisMealsLastWeekAvailable} />
-        </div>
+        <MealsLastWeek />
       </div>
-      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <div className="w-full">
-          <QuotationPerMeal />
-        </div>
-        <div className="w-full">
-          {" "}
-          <TeachersAverageTime />
-        </div>
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
+        <QuotationPerMeal />
+
+        <TeachersAverageTime />
       </div>
-      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <div className="w-full">
+      <div className="col-span-full grid grid-cols-1 gap-6 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
+         
           <TeachersAttendanceSummary />
-        </div>
         
       </div>
     </div>

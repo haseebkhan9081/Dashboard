@@ -10,28 +10,31 @@ import ErrorDisplay from './Error';
 
 ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale, ChartDataLabels);
 
-const fetchAllFiles = async (attendanceSheet: string, WorkSheet: string) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/TeachersAverageTime?attendanceSheet=${attendanceSheet}&attendanceWorkSheet=${WorkSheet}`);
+const getTeachersAverageTime = async (programId: string, month: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/attendance/TeachersAverageTime?schoolId=${programId}&month=${month}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const TeachersAverageTime: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
+  const programId = params.get("programId");
+  const month = params.get("month");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && WorkSheet != null && expensesWorkSheet != null;
+
+  const allParamsAvailable =
+    programId != null &&
+    month != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['TeachersAverageTime', attendanceSheet, WorkSheet],
+    queryKey: ["TeachersAverageTime", programId, month],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(attendanceSheet!, WorkSheet!);
+        return getTeachersAverageTime(programId!, month!);
       } else {
         return Promise.resolve({});
       }
@@ -40,6 +43,9 @@ const TeachersAverageTime: React.FC = () => {
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
+  if (!data || data.length === 0) {
+    return null;
+  }
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
   // Early return if data is empty or undefined

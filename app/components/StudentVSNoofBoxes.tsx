@@ -1,208 +1,189 @@
-import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from 'chart.js';
-import { ChartData, ChartOptions } from 'chart.js';
-import Loading from './Loading';
-import ErrorDisplay from './Error';
-import NoDataFallback from './NoDataFallback';
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
+import Loading from "./Loading";
+import ErrorDisplay from "./Error";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
+// Chart.js setup
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-type File = {
+// Each daily record
+export type StudentsVsBoxesRow = {
   Date: string;
-  NoOfBoxes: string;
+  NoOfBoxes: number;
   NoOfPresents: number;
 };
 
-const fetchAllFiles = async (
-  attendanceSheet: string,
-  quotationSheet: string,
-  WorkSheet: string,
-  expensesWorkSheet: string
-): Promise<File[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/Studentsvsboxes?attendanceSheet=${attendanceSheet}&quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}&attendanceWorkSheet=${WorkSheet}&expensesWorkSheet=${expensesWorkSheet}`);
+// Full API response
+export type StudentsVsBoxesResponse = {
+  results: StudentsVsBoxesRow[];
+  minValue: number;
+};
+
+// Fetch function
+const fetchStudentsVsBoxes = async (
+  programId: string,
+  month: string
+): Promise<StudentsVsBoxesResponse> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/meals/StudentsVsBoxes?schoolId=${programId}&month=${month}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const StudentVSNoofBoxes: React.FC = () => {
   const params = useSearchParams();
+  const programId = params.get("programId");
+  const month = params.get("month");
 
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
+  const allParamsAvailable = programId && month;
 
-  const allParamsAvailable = attendanceSheet && quotationSheet && WorkSheet && expensesWorkSheet;
-
-  const { data, error, isLoading,isRefetching ,} = useQuery<File[]>({
-    queryKey: ['worksheets', attendanceSheet, quotationSheet, WorkSheet,expensesWorkSheet],
-    queryFn: () => {
-      if (allParamsAvailable) {
-        return fetchAllFiles(attendanceSheet!, quotationSheet!,  WorkSheet, expensesWorkSheet!);
-      } else {
-        return Promise.resolve([]); // Return an empty array if not all params are available
-      }
-    },
-    enabled: !!allParamsAvailable, // Only fetch if all params are available
-    retry: 3, // Number of retry attempts
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
+  // ✅ Corrected type here
+  const { data, error, isLoading } = useQuery<StudentsVsBoxesResponse>({
+    queryKey: ["students-vs-boxes", programId, month],
+    queryFn: () => fetchStudentsVsBoxes(programId!, month!),
+    enabled: !!allParamsAvailable, // Only fetch if params exist
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });
 
-const [isMobile,setIsMobile]=useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-useEffect(()=>{
-if(typeof(window)!=='undefined'){
-  const handleResize=()=>{
-    setIsMobile(window.innerWidth<768)
-  }
-  window.addEventListener('resize',handleResize);
-  handleResize();
-  return ()=>window.removeEventListener('resize',handleResize);
-}
-},[]);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+      window.addEventListener("resize", handleResize);
+      handleResize();
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
 
+  if (isLoading) return <Loading />;
+  if (error) return <ErrorDisplay message={(error as Error).message} />;
 
-
-  if (isLoading) return <Loading/>;
-  if (error) return <ErrorDisplay message={(error as Error).message}/>;
-
-  // Ensure data is always an array
-  const cleanedData = (data ?? [])
-    .filter(item =>
-      item.Date &&
-      !item.Date.includes('TOTAL') &&
-      !item.Date.includes('Sunday Excluded') &&
-      (parseInt(item.NoOfBoxes, 10) !== 0 || item.NoOfPresents !== 0) // Exclude entries where both values are 0
+  // ✅ Access results correctly
+  const cleanedData = (data?.results ?? [])
+    .filter(
+      (item) =>
+        item.Date &&
+        !item.Date.includes("TOTAL") &&
+        !item.Date.includes("Sunday Excluded") &&
+        (item.NoOfBoxes !== 0 || item.NoOfPresents !== 0)
     )
-    .map(item => ({
-      Date: item.Date,
-      NoOfBoxes: parseInt(item.NoOfBoxes, 10),
-      NoOfPresents: item.NoOfPresents
+    .map((item) => ({
+      Date: new Date(item.Date).toLocaleDateString("en-PK", {
+        timeZone: "Asia/Karachi",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      NoOfBoxes: item.NoOfBoxes,
+      NoOfPresents: item.NoOfPresents,
     }));
 
-  const chartData: ChartData<'line'> = {
-    labels: cleanedData.map(entry => entry.Date),
+
+  const chartData: ChartData<"line"> = {
+    labels: cleanedData.map((entry) => entry.Date),
     datasets: [
-      { 
-        label: 'Number of Meals',
-        data: cleanedData.map(entry => entry.NoOfBoxes),
-        borderColor: '#A2BD9D', // Primary color
-        backgroundColor: 'rgba(162, 189, 157, 0.2)', // Light version of primary color
+      {
+        label: "Number of Meals",
+        data: cleanedData.map((entry) => entry.NoOfBoxes),
+        borderColor: "#A2BD9D",
+        backgroundColor: "rgba(162, 189, 157, 0.2)",
         fill: true,
       },
       {
-        label: 'Number of Students',
-        data: cleanedData.map(entry => entry.NoOfPresents),
-        borderColor: '#9B9B9B', // Neutral color
-        backgroundColor: 'rgba(155, 155, 155, 0.2)', // Light neutral color
+        label: "Number of Students",
+        data: cleanedData.map((entry) => entry.NoOfPresents),
+        borderColor: "#9B9B9B",
+        backgroundColor: "rgba(155, 155, 155, 0.2)",
         fill: true,
       },
     ],
   };
 
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
-    
     plugins: {
-
       legend: {
-        position: 'top',
+        position: "top",
         labels: {
-          font: {
-            weight: 'bold',
-            size: 14,
-          },
-          color: '#333',
+          font: { weight: "bold", size: 14 },
+          color: "#333",
         },
-       
-         
       },
       title: {
-        align:"center",
         display: true,
-        
-        font: {
-          weight: 'bold',
-          size: 16,
-        },
-        color: '#333',
-        
-        text: 'Number of Meals vs Number of Students',
+        text: "Number of Meals vs Number of Students",
+        font: { weight: "bold", size: 16 },
+        color: "#333",
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem) => {
-            // Customize tooltip labels as needed
-            return tooltipItem.dataset.label + ': ' + tooltipItem.formattedValue;
-          },
+          label: (tooltipItem) =>
+            tooltipItem.dataset.label + ": " + tooltipItem.formattedValue,
         },
       },
       datalabels: {
-        color: 'black',
-font:{
-  
-  weight:'bold',
-
-
-},
-align:"bottom",
-rotation:-60,
-anchor:"end",
- 
-
-
-        display: isMobile?true:false, // Ensure data labels are not shown if you're using chartjs-plugin-datalabels
+        display: isMobile,
       },
     },
-    
     scales: {
       x: {
         ticks: {
-          // Rotate x-axis labels to vertical
-          font: {
-            weight: 'bold',
-            size: 12,
-          },
-          color: '#333',
-          maxRotation: 90, // Max rotation angle
-          minRotation: 90, // Min rotation angle
+          font: { weight: "bold", size: 12 },
+          color: "#333",
+          maxRotation: 90,
+          minRotation: 90,
         },
       },
       y: {
-        min:100,
+        min: data?.minValue || 0, // ✅ Use API-provided minValue
         ticks: {
-          font: {
-            weight: 'bold',
-            size: 12,
-          },
-          color: '#333',
-          callback: function(value) {
-            return value.toLocaleString(); // Format numbers with commas
-          },
+          font: { weight: "bold", size: 12 },
+          color: "#333",
+          callback: (value) => value.toLocaleString(),
         },
       },
     },
   };
-  
-  
- 
+
   return (
     <div>
-      {!(chartData.datasets[0].data.length==0)?<div className="h-[400px] p-4 md:p-6 w-full  ">
-  <Line data={chartData} options={options} />
- </div>:<div
- className='text-center
- text-slate-400
- '
- >No Data!</div>}
-    
- </div>
+      {chartData.datasets[0].data.length > 0 ? (
+        <div className="h-[400px] p-4 md:p-6 w-full">
+          <Line data={chartData} options={options} />
+        </div>
+      ) : (
+        <div>No Data Found</div>
+      )}
+    </div>
   );
 };
 

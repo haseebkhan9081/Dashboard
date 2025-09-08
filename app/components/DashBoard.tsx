@@ -18,17 +18,14 @@ import Image from 'next/image';
 
 const DashBoard: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
+  const programId = params.get("programId");
+  const month = params.get("month");
+
 
  
-  const isParamsAvailable = 
-    attendanceSheet !== null &&
-    quotationSheet !== null &&
-    WorkSheet !== null &&
-    expensesWorkSheet !== null;
+  const isParamsAvailable =
+    programId !== null &&
+    month !== null 
    
   
  

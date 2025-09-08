@@ -5,41 +5,52 @@ import Decimal from 'decimal.js';
 import Loading from './Loading';
 import ErrorDisplay from './Error';
 import NoDataFallback from './NoDataFallback';
-const fetchTotalMealsServed = async (quotationSheet: string) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/totalMealsServed?quotationSheet=${quotationSheet}`);
+const fetchTotalMealsServed = async (programId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/meals/totalMealsBySchool?schoolId=${programId}`
+  );
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   return response.json();
 };
 
-const fetchAverageStudents = async (attendanceSheet: string) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/averageAttendanceUntilNow?attendanceSheet=${attendanceSheet}`);
+const fetchAverageStudents = async (programId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/attendance/AverageAttendanceUntilNow?schoolId=${programId}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const MetricsDisplay: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null;
+  const programId = params.get("programId");
 
-  const { data: mealsData, error: mealsError, isLoading: mealsLoading } = useQuery({
-    queryKey: ['totalMealsServed', quotationSheet],
-    queryFn: () => allParamsAvailable ? fetchTotalMealsServed(quotationSheet!) : Promise.resolve({ totalMealsServed: 0 }),
-    enabled: !!allParamsAvailable,
+  
+
+
+  const {
+    data: mealsData,
+    error: mealsError,
+    isLoading: mealsLoading,
+  } = useQuery({
+    queryKey: ["totalMealsServed", programId],
+    queryFn: () => fetchTotalMealsServed(programId!),
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });
 
-  const { data: studentsData, error: studentsError, isLoading: studentsLoading } = useQuery({
-    queryKey: ['averageStudents', attendanceSheet],
-    queryFn: () => allParamsAvailable ? fetchAverageStudents(attendanceSheet!) : Promise.resolve({ averageStudents: 0 }),
-    enabled: !!allParamsAvailable,
+  const {
+    data: studentsData,
+    error: studentsError,
+    isLoading: studentsLoading,
+  } = useQuery({
+    queryKey: ["averageStudents", programId],
+    queryFn: () =>
+      fetchAverageStudents(programId!),
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });

@@ -10,28 +10,31 @@ import ErrorDisplay from './Error';
 
 ChartJS.register(BarElement, Title, Tooltip, Legend, CategoryScale, LinearScale, ChartDataLabels);
 
-const fetchAllFiles = async (quotationSheet: string, WorkSheet: string) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/mealCost?quotationSheet=${quotationSheet}&quotationWorkSheet=${WorkSheet}`);
+const fetchAllFiles = async (programId: string, month: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/meals/MealCost?schoolId=${programId}&month=${month}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
 const MealCost: React.FC = () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const  WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
+  const programId = params.get("programId");
+  const month = params.get("month");
 
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && WorkSheet != null && expensesWorkSheet != null;
+
+  const allParamsAvailable =
+    programId != null &&
+    month != null
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, WorkSheet],
+    queryKey: ["worksheets", programId, month],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, WorkSheet!);
+        return fetchAllFiles(programId!, month!);
       } else {
         return Promise.resolve({});
       }

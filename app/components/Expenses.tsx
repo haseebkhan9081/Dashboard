@@ -9,32 +9,32 @@ import ErrorDisplay from './Error';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const fetchAllFiles = async (
-  quotationSheet: string,
-  expensesWorkSheet: string,
-  WorkSheet: string
+const fetchExpenses = async (
+  programId: string,
+  month: string 
 ) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/analytics/expenses?quotationSheet=${quotationSheet}&expensesWorkSheet=${expensesWorkSheet}&month=${WorkSheet}`);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/expenses/getExpensesByMonth?schoolId=${programId}&month=${month}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
 };
 
-const Expenses= ({onDataAvailability}:{onDataAvailability:(v:boolean)=>void}) => {
+const Expenses= () => {
   const params = useSearchParams();
-  const attendanceSheet = params.get("AttendanceSheet");
-  const quotationSheet = params.get("QuotationSheet");
-  const WorkSheet = params.get("WorkSheet");
-  const expensesWorkSheet = params.get("ExpensesWorkSheet");
-
-  const allParamsAvailable = attendanceSheet != null && quotationSheet != null && WorkSheet != null && expensesWorkSheet != null;
+  const programId = params.get("programId");
+  const month = params.get("month");
+  const allParamsAvailable =
+    programId != null &&
+    month != null;
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['worksheets', quotationSheet, expensesWorkSheet, WorkSheet],
+    queryKey: ["fetchExpenses", programId, month ],
     queryFn: () => {
       if (allParamsAvailable) {
-        return fetchAllFiles(quotationSheet!, expensesWorkSheet!, WorkSheet!);
+        return fetchExpenses(programId!, month!);
       } else {
         return Promise.resolve({});
       }
@@ -43,20 +43,14 @@ const Expenses= ({onDataAvailability}:{onDataAvailability:(v:boolean)=>void}) =>
     retry: 3, // Number of retry attempts
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000), // Exponential backoff
   });
-  useEffect(() => {
-    if(data){
-
-    
-    const months = Object.keys(data);
-  const salarySums = months.map(month => data[month].salarySum);
-  const otherExpensesSums = months.map(month => data[month].otherExpensesSum);
-  console.log("the test ",salarySums[0])
-    onDataAvailability(!(salarySums[0]==undefined&&otherExpensesSums[0]==undefined));
-  }
-  }, [data, onDataAvailability]);
+  
 
   if (isLoading) return <Loading/>;
   if (error) return <ErrorDisplay message={(error as Error).message}/>;
+  console.log("Data = > ", data);
+  if (!data || data.length === 0) {
+    return null;
+  }
    // Prepare chart data
   const months = Object.keys(data);
   const salarySums = months.map(month => data[month].salarySum);
