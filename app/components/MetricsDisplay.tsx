@@ -29,7 +29,7 @@ const MetricsDisplay: React.FC = () => {
   const params = useSearchParams();
   const programId = params.get("programId");
 
-  
+   const allParamsAvailable = programId != null;
 
 
   const {
@@ -38,7 +38,13 @@ const MetricsDisplay: React.FC = () => {
     isLoading: mealsLoading,
   } = useQuery({
     queryKey: ["totalMealsServed", programId],
-    queryFn: () => fetchTotalMealsServed(programId!),
+    queryFn: () => {
+      if (allParamsAvailable) {
+      
+      return fetchTotalMealsServed(programId!)}
+      else{
+     return Promise.resolve({ formattedLatestDate: "", totalMealsServed: 0 });
+      }},
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });
@@ -49,8 +55,17 @@ const MetricsDisplay: React.FC = () => {
     isLoading: studentsLoading,
   } = useQuery({
     queryKey: ["averageStudents", programId],
-    queryFn: () =>
-      fetchAverageStudents(programId!),
+    queryFn: () =>{
+     if (allParamsAvailable) {
+      
+      return fetchAverageStudents(programId!)}
+      else{
+return Promise.resolve({
+  averageAttendanceUntilNow: 0,
+});
+      }
+    
+    },
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   });
