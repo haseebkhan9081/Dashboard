@@ -60,7 +60,7 @@ const MealsLastWeek = () => {
       {data?.last7DaysMeals?.length > 0 && (
         <div className="p-4 md:p-6 w-full">
           <h2 className="text-2xl font-bold mb-4 text-primary">
-            Meals Served in the Last 7 Days
+           Last 7 Meals
           </h2>
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse border border-primary">
