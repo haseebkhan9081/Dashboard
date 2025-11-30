@@ -164,7 +164,7 @@ const StudentVSNoofBoxes: React.FC = () => {
         },
       },
       y: {
-        min: data?.minValue || 0, // ✅ Use API-provided minValue
+        min: (data?.minValue  || 0)-10, // ✅ Use API-provided minValue
         ticks: {
           font: { weight: "bold", size: 12 },
           color: "#333",
