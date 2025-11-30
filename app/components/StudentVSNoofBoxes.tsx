@@ -38,6 +38,7 @@ export type StudentsVsBoxesRow = {
 export type StudentsVsBoxesResponse = {
   results: StudentsVsBoxesRow[];
   minValue: number;
+  maxValue:number;
 };
 
 // Fetch function
@@ -156,6 +157,7 @@ const StudentVSNoofBoxes: React.FC = () => {
     },
     scales: {
       x: {
+        
         ticks: {
           font: { weight: "bold", size: 12 },
           color: "#333",
@@ -164,7 +166,8 @@ const StudentVSNoofBoxes: React.FC = () => {
         },
       },
       y: {
-        min: (data?.minValue  || 0)-10, // ✅ Use API-provided minValue
+        min:(data?.minValue  || 0)-10, // ✅ Use API-provided minValue
+        max:(data?.maxValue  || 0)+10,
         ticks: {
           font: { weight: "bold", size: 12 },
           color: "#333",
